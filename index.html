@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SerraNobre Cafés Especiais Ltda. | Planejamento Empresarial & Financeiro</title>
+    <title>SerraNobre Cafés Especiais Ltda. | Loja Virtual & Planejamento Empresarial</title>
     
-    <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+    <!-- Google Fonts: Inter & Playfair Display -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -18,10 +18,10 @@
                 extend: {
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
-                        display: ['Plus Jakarta Sans', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
                     },
                     colors: {
-                        coffee: {
+                        espresso: {
                             50: '#fdf8f4',
                             100: '#f7ece1',
                             200: '#eed6c0',
@@ -32,14 +32,12 @@
                             700: '#97482d',
                             800: '#7a3b29',
                             900: '#3c2117',
-                            950: '#23120c',
+                            950: '#1f100a',
                         },
-                        olive: {
-                            50: '#f4f6f0',
-                            100: '#e5eadc',
-                            600: '#556b2f',
-                            700: '#445626',
-                            800: '#374520',
+                        caramel: {
+                            400: '#e0a96d',
+                            500: '#c98a4b',
+                            600: '#a86b32',
                         },
                         cream: '#faf7f2'
                     }
@@ -54,30 +52,25 @@
     <style>
         body {
             background-color: #faf7f2;
-            color: #23120c;
+            color: #1f100a;
             -webkit-tap-highlight-color: transparent;
         }
 
-        h1, h2, h3, .font-display {
-            font-family: 'Plus Jakarta Sans', sans-serif;
+        .font-brand {
+            font-family: 'Playfair Display', serif;
         }
 
-        .tab-panel {
+        .page-section {
             display: none;
-            animation: slideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: fadeIn 0.25s ease-out;
         }
 
-        .tab-panel.active {
+        .page-section.active {
             display: block;
         }
 
-        body.presentation-mode .tab-panel {
-            display: block !important;
-            margin-bottom: 2.5rem;
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(8px); }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -89,503 +82,590 @@
             scrollbar-width: none;
         }
 
-        /* Toast de notificação sem usar alert() */
-        #toast-box {
-            transition: all 0.3s ease;
-        }
-
         @media print {
             .no-print {
                 display: none !important;
             }
-            .tab-panel {
-                display: block !important;
-                margin-bottom: 2rem;
-                page-break-inside: avoid;
-            }
             body {
                 background-color: #ffffff;
-            }
-            .shadow-sm, .shadow-md, .shadow-lg, .shadow-xl {
-                box-shadow: none !important;
-                border: 1px solid #e5d8cc !important;
             }
         }
     </style>
 </head>
-<body class="antialiased selection:bg-coffee-700 selection:text-white">
+<body class="antialiased selection:bg-espresso-700 selection:text-white flex flex-col min-h-screen">
 
-    <!-- Toast Notification (Substitui alert()) -->
-    <div id="toast-box" class="fixed bottom-5 right-5 z-50 translate-y-24 opacity-0 pointer-events-none bg-coffee-900 text-cream px-4 py-3 rounded-2xl shadow-xl border border-coffee-700 flex items-center gap-3 text-xs sm:text-sm font-medium">
+    <!-- Toast de Feedback (Substitui alert()) -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 translate-y-24 opacity-0 pointer-events-none transition-all duration-300 bg-espresso-950 text-cream px-4 py-3 rounded-2xl shadow-2xl border border-espresso-700 flex items-center gap-3 text-xs sm:text-sm font-medium max-w-sm">
         <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shrink-0"></span>
-        <span id="toast-msg">Ação concluída com sucesso!</span>
+        <span id="toast-message">Produto adicionado ao carrinho!</span>
     </div>
 
     <!-- ===================================================================== -->
-    <!-- 1. CABEÇALHO CORPORATIVO & NAVEGAÇÃO ÁGIL                             -->
+    <!-- DRAWER DO CARRINHO DE COMPRAS (LATERAL / MODAL)                       -->
     <!-- ===================================================================== -->
-    <header class="bg-gradient-to-br from-coffee-950 via-coffee-900 to-coffee-800 text-cream shadow-xl border-b border-coffee-700/50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-                
-                <!-- Marca & Logotipo SVG -->
-                <div class="flex items-start sm:items-center gap-4">
-                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-coffee-500 to-coffee-700 p-3 shadow-lg border border-coffee-400/30 flex items-center justify-center shrink-0">
-                        <!-- Logotipo SVG Customizado: Grão de Café + Montanha SerraNobre -->
-                        <svg viewBox="0 0 64 64" fill="none" class="w-full h-full text-cream" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M8 46L22 24L32 37L42 20L56 46H8Z" stroke="currentColor" stroke-width="3.2" stroke-linejoin="round" fill="rgba(255,255,255,0.1)"/>
-                            <ellipse cx="32" cy="44" rx="11" ry="7.5" fill="#23120c" stroke="currentColor" stroke-width="2.5"/>
-                            <path d="M23 44C28 41.5 36 46.5 41 44" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
-                            <circle cx="46" cy="14" r="3" fill="#e2b895"/>
-                        </svg>
-                    </div>
-
-                    <div>
-                        <div class="flex flex-wrap items-center gap-2 mb-1.5">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-coffee-500/25 text-coffee-200 border border-coffee-400/30">
-                                Portal Executivo Oficial
-                            </span>
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-olive-600/30 text-olive-100 border border-olive-600/50">
-                                Avaliação: 20 Pontos • 23 e 24 de Novembro
-                            </span>
-                        </div>
-                        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white">
-                            SerraNobre <span class="text-coffee-300 font-semibold">Cafés Especiais Ltda.</span>
-                        </h1>
-                        <p class="text-xs sm:text-sm text-coffee-200 mt-1">
-                            Planejamento Empresarial & Financeiro 2026 • CNPJ: 48.912.304/0001-72 • Belo Horizonte/MG
-                        </p>
-                    </div>
+    <div id="cart-overlay" onclick="toggleCart(false)" class="fixed inset-0 bg-espresso-950/60 backdrop-blur-xs z-40 hidden transition-opacity no-print"></div>
+    <aside id="cart-drawer" class="fixed top-0 right-0 h-full w-full sm:w-[420px] bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col no-print">
+        <!-- Cabeçalho do Carrinho -->
+        <div class="p-5 bg-espresso-950 text-cream flex items-center justify-between border-b border-espresso-800">
+            <div class="flex items-center gap-2.5">
+                <span class="text-xl">🛒</span>
+                <div>
+                    <h2 class="font-bold text-base">Seu Carrinho SerraNobre</h2>
+                    <p id="cart-header-count" class="text-xs text-espresso-300">0 itens selecionados</p>
                 </div>
+            </div>
+            <button onclick="toggleCart(false)" class="p-2 rounded-xl hover:bg-espresso-800 text-espresso-200 hover:text-white transition-colors" aria-label="Fechar carrinho">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
 
-                <!-- Botões de Ação Corporativa -->
-                <div class="flex flex-wrap items-center gap-2.5 no-print">
-                    <button id="btn-presentation" onclick="togglePresentationMode()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-coffee-800/80 hover:bg-coffee-700 text-coffee-100 border border-coffee-600/50 transition-all active:scale-95">
-                        <svg class="w-4 h-4 text-coffee-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-                        <span id="txt-presentation">Visão Completa (Apresentação)</span>
-                    </button>
-                    <button onclick="window.print()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-coffee-500 hover:bg-coffee-400 text-white shadow-md transition-all active:scale-95">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                        <span>Imprimir / Exportar Relatório</span>
-                    </button>
-                </div>
-
+        <!-- Barra de Progresso de Frete Grátis -->
+        <div class="px-5 py-3 bg-espresso-50 border-b border-espresso-200/70">
+            <div class="flex items-center justify-between text-xs mb-1.5">
+                <span id="shipping-promo-text" class="font-semibold text-espresso-800">Faltam R$ 150,00 para Frete Grátis!</span>
+                <span class="text-[11px] font-bold text-espresso-600">Meta: R$ 150</span>
+            </div>
+            <div class="w-full h-2 bg-espresso-200 rounded-full overflow-hidden">
+                <div id="shipping-progress-bar" class="h-full bg-emerald-600 transition-all duration-300" style="width: 0%"></div>
             </div>
         </div>
 
-        <!-- Barra de Navegação por Seções -->
-        <nav class="bg-coffee-950/90 backdrop-blur-md border-t border-coffee-800/80 sticky top-0 z-30 no-print">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex items-center space-x-2 overflow-x-auto no-scrollbar py-2.5" role="tablist">
-                    <button onclick="openTab('sec-empresa')" id="tab-sec-empresa" class="nav-pill active flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all bg-coffee-600 text-white shadow-sm">
-                        <span>🏢</span> 1. Apresentação & Empresa
+        <!-- Lista de Itens no Carrinho -->
+        <div id="cart-items-container" class="flex-1 overflow-y-auto p-5 space-y-3">
+            <!-- Renderizado via JS -->
+        </div>
+
+        <!-- Rodapé do Carrinho (Totais e Botão Checkout) -->
+        <div class="p-5 bg-espresso-50 border-t border-espresso-200 space-y-3">
+            <div class="space-y-1.5 text-sm">
+                <div class="flex justify-between text-espresso-700">
+                    <span>Subtotal</span>
+                    <span id="cart-subtotal" class="font-semibold">R$ 0,00</span>
+                </div>
+                <div class="flex justify-between text-espresso-700">
+                    <span>Frete (Entrega Expressa)</span>
+                    <span id="cart-shipping" class="font-semibold">R$ 18,00</span>
+                </div>
+                <div class="flex justify-between text-base font-extrabold text-espresso-950 pt-2 border-t border-espresso-200">
+                    <span>Total do Pedido</span>
+                    <span id="cart-total">R$ 0,00</span>
+                </div>
+            </div>
+
+            <button id="btn-go-checkout" onclick="proceedToCheckout()" disabled class="w-full py-3.5 px-4 rounded-xl font-bold text-sm bg-espresso-800 hover:bg-espresso-700 disabled:bg-espresso-300 disabled:cursor-not-allowed text-white shadow-md transition-all flex items-center justify-center gap-2">
+                <span>Finalizar Compra</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </button>
+        </div>
+    </aside>
+
+    <!-- ===================================================================== -->
+    <!-- CABEÇALHO PRINCIPAL & NAVEGAÇÃO ENTRE PÁGINAS                         -->
+    <!-- ===================================================================== -->
+    <header class="bg-espresso-950 text-cream sticky top-0 z-30 shadow-lg border-b border-espresso-800/80 no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Linha Superior: Marca + Vendas ao Vivo + Botão Carrinho -->
+            <div class="flex items-center justify-between py-3.5 gap-4">
+                <!-- Logotipo e Nome -->
+                <button onclick="navigateTo('page-loja')" class="flex items-center gap-3 text-left group">
+                    <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-caramel-500 to-espresso-700 p-2 flex items-center justify-center shadow-md border border-caramel-400/30 shrink-0">
+                        <svg viewBox="0 0 64 64" fill="none" class="w-full h-full text-cream">
+                            <path d="M8 46L22 24L32 37L42 20L56 46H8Z" stroke="currentColor" stroke-width="3.5" stroke-linejoin="round" fill="rgba(255,255,255,0.12)"/>
+                            <ellipse cx="32" cy="44" rx="11" ry="7.5" fill="#1f100a" stroke="currentColor" stroke-width="2.5"/>
+                            <path d="M23 44C28 41.5 36 46.5 41 44" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-brand text-lg sm:text-xl font-extrabold tracking-tight text-white group-hover:text-caramel-400 transition-colors">SerraNobre</span>
+                            <span class="hidden sm:inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-espresso-800 text-caramel-400 border border-espresso-700">Cafés Especiais</span>
+                        </div>
+                        <p class="text-[11px] text-espresso-300 hidden sm:block">Torrefação Artesanal • Belo Horizonte - MG</p>
+                    </div>
+                </button>
+
+                <!-- Indicador de Vendas ao Vivo + Carrinho -->
+                <div class="flex items-center gap-2.5 sm:gap-4">
+                    <button onclick="navigateTo('page-financeiro')" title="Ver impacto no painel financeiro" class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-espresso-900/90 border border-espresso-700/80 hover:border-emerald-500/60 transition-colors text-xs">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span class="text-espresso-300">Vendas ao Vivo:</span>
+                        <strong id="live-sales-badge" class="text-emerald-400 font-bold">+R$ 0,00 (0 ped.)</strong>
                     </button>
-                    <button onclick="openTab('sec-custos')" id="tab-sec-custos" class="nav-pill flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all text-coffee-200 hover:text-white hover:bg-coffee-800">
-                        <span>🧾</span> 2. Custos Operacionais
-                    </button>
-                    <button onclick="openTab('sec-faturamento')" id="tab-sec-faturamento" class="nav-pill flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all text-coffee-200 hover:text-white hover:bg-coffee-800">
-                        <span>📈</span> 3. Faturamento & Simulador
-                    </button>
-                    <button onclick="openTab('sec-planilha')" id="tab-sec-planilha" class="nav-pill flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all text-coffee-200 hover:text-white hover:bg-coffee-800">
-                        <span>📊</span> 4. Planilha Anual & Gráficos
-                    </button>
-                    <button onclick="openTab('sec-atividade')" id="tab-sec-atividade" class="nav-pill flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all text-coffee-200 hover:text-white hover:bg-coffee-800">
-                        <span>🧮</span> 5. Atividade: Média Aritmética
+
+                    <button onclick="toggleCart(true)" class="relative inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-caramel-600 hover:bg-caramel-500 text-white font-bold text-xs sm:text-sm shadow-md transition-all active:scale-95">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                        <span class="hidden sm:inline">Carrinho</span>
+                        <span id="header-cart-badge" class="px-2 py-0.5 text-xs font-extrabold rounded-full bg-espresso-950 text-caramel-400">0</span>
                     </button>
                 </div>
             </div>
-        </nav>
+
+            <!-- Barra de Navegação das 5 Páginas -->
+            <nav class="flex items-center space-x-1.5 overflow-x-auto no-scrollbar py-2 border-t border-espresso-900" role="tablist">
+                <button onclick="navigateTo('page-loja')" id="nav-page-loja" class="nav-tab active flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all bg-caramel-600 text-white shadow-xs">
+                    <span>🛍️</span> 1. Loja Virtual (Exemplo)
+                </button>
+                <button onclick="navigateTo('page-empresa')" id="nav-page-empresa" class="nav-tab flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all text-espresso-200 hover:text-white hover:bg-espresso-900">
+                    <span>🏢</span> 2. Sobre a Empresa & Projeto
+                </button>
+                <button onclick="navigateTo('page-financeiro')" id="nav-page-financeiro" class="nav-tab flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all text-espresso-200 hover:text-white hover:bg-espresso-900">
+                    <span>💰</span> 3. Custos & Faturamento
+                </button>
+                <button onclick="navigateTo('page-planilha')" id="nav-page-planilha" class="nav-tab flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all text-espresso-200 hover:text-white hover:bg-espresso-900">
+                    <span>📊</span> 4. Planilha & Gráficos
+                </button>
+                <button onclick="navigateTo('page-atividade')" id="nav-page-atividade" class="nav-tab flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all text-espresso-200 hover:text-white hover:bg-espresso-900">
+                    <span>🧮</span> 5. Atividade: Média Aritmética
+                </button>
+            </nav>
+        </div>
     </header>
 
     <!-- ===================================================================== -->
-    <!-- CONTEÚDO PRINCIPAL                                                    -->
+    <!-- CONTEÚDO PRINCIPAL DAS PÁGINAS                                        -->
     <!-- ===================================================================== -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
 
         <!-- ================================================================= -->
-        <!-- SEÇÃO 1: APRESENTAÇÃO DO PROJETO & IDENTIDADE DA EMPRESA          -->
+        <!-- PÁGINA 1: LOJA VIRTUAL, CHECKOUT E CONFIRMAÇÃO DE COMPRA          -->
         <!-- ================================================================= -->
-        <section id="sec-empresa" class="tab-panel active space-y-6">
-            
-            <!-- Apresentação Institucional -->
-            <div class="bg-white rounded-2xl shadow-sm border border-coffee-200/70 p-6 sm:p-8">
-                <div class="flex flex-col sm:flex-row items-start gap-4">
-                    <div class="p-3.5 rounded-2xl bg-coffee-100 text-coffee-700 shrink-0">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
-                    </div>
-                    <div>
-                        <span class="text-xs font-bold uppercase tracking-wider text-coffee-600">Apresentação do Projeto</span>
-                        <h2 class="text-xl sm:text-2xl font-extrabold text-coffee-950 mt-0.5">Planejamento Empresarial e Financeiro</h2>
-                        <p class="mt-3 text-coffee-800 leading-relaxed text-sm sm:text-base">
-                            Nós da <strong>SerraNobre Cafés Especiais Ltda.</strong> apresentamos nosso <strong>Plano Empresarial e Financeiro</strong> estruturado para a consolidação da nossa operação de torrefação artesanal e comércio de cafés especiais. Este documento detalha nossa identidade corporativa, portfólio de produtos, estrutura rigorosa de custos operacionais (fixos e variáveis), projeções de faturamento mensal e anual, comparação com o desempenho real obtido e indicadores financeiros ilustrados por planilhas e gráficos gerenciais.
+        <section id="page-loja" class="page-section active space-y-6">
+
+            <!-- SUB-VIEW A: CATÁLOGO DE PRODUTOS -->
+            <div id="store-catalog-view" class="space-y-6">
+                <!-- Banner Hero da Loja -->
+                <div class="bg-gradient-to-r from-espresso-900 via-espresso-800 to-espresso-900 text-cream rounded-3xl p-6 sm:p-8 shadow-md relative overflow-hidden">
+                    <div class="relative z-10 max-w-2xl">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-caramel-500/20 text-caramel-400 border border-caramel-400/30 mb-3">
+                            ✨ Loja Oficial de Demonstração • Torra Fresca Semanal
+                        </span>
+                        <h1 class="font-brand text-2xl sm:text-4xl font-extrabold text-white leading-tight">
+                            Cafés Especiais das Montanhas de Minas Direto para Sua Xícara
+                        </h1>
+                        <p class="mt-2.5 text-xs sm:text-sm text-espresso-200 leading-relaxed">
+                            Explore nosso catálogo fictício integrado ao planejamento financeiro da <strong>SerraNobre Cafés Especiais Ltda.</strong> Pesquise, filtre, adicione ao carrinho e simule um pedido completo!
                         </p>
+                    </div>
+                </div>
+
+                <!-- Barra de Pesquisa e Filtros por Categoria -->
+                <div class="bg-white p-4 rounded-2xl shadow-xs border border-espresso-200/70 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+                    <!-- Campo de Pesquisa -->
+                    <div class="relative flex-1">
+                        <svg class="w-5 h-5 text-espresso-400 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        <input type="text" id="store-search-input" oninput="renderStoreProducts()" placeholder="Pesquisar café por nome, notas sensoriais ou peso..." class="w-full pl-11 pr-4 py-2.5 rounded-xl bg-espresso-50 border border-espresso-200 text-sm text-espresso-950 placeholder-espresso-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-caramel-500">
+                    </div>
+
+                    <!-- Botões de Categoria -->
+                    <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 md:pb-0">
+                        <button onclick="setStoreCategory('Todos')" data-cat="Todos" class="cat-btn active px-3.5 py-2 rounded-xl text-xs font-bold bg-espresso-900 text-white whitespace-nowrap transition-all">Todos (6)</button>
+                        <button onclick="setStoreCategory('Grãos Especiais')" data-cat="Grãos Especiais" class="cat-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-espresso-50 text-espresso-800 hover:bg-espresso-100 whitespace-nowrap transition-all">Grãos Especiais</button>
+                        <button onclick="setStoreCategory('Moídos')" data-cat="Moídos" class="cat-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-espresso-50 text-espresso-800 hover:bg-espresso-100 whitespace-nowrap transition-all">Moídos</button>
+                        <button onclick="setStoreCategory('Cápsulas')" data-cat="Cápsulas" class="cat-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-espresso-50 text-espresso-800 hover:bg-espresso-100 whitespace-nowrap transition-all">Cápsulas</button>
+                        <button onclick="setStoreCategory('Kits')" data-cat="Kits" class="cat-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-espresso-50 text-espresso-800 hover:bg-espresso-100 whitespace-nowrap transition-all">Kits & Bebidas</button>
+                    </div>
+                </div>
+
+                <!-- Grid de Produtos -->
+                <div id="store-products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Renderizado via JS -->
+                </div>
+            </div>
+
+            <!-- SUB-VIEW B: CHECKOUT (FINALIZAÇÃO DO PEDIDO) -->
+            <div id="store-checkout-view" class="hidden space-y-6">
+                <div class="flex items-center justify-between">
+                    <button onclick="backToCatalog()" class="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-espresso-700 hover:text-espresso-950 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                        Voltar para o Catálogo da Loja
+                    </button>
+                    <span class="text-xs font-bold px-3 py-1 rounded-full bg-amber-100 text-amber-800">Ambiente de Simulação Fictícia</span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- Formulário de Entrega e Pagamento (7 colunas) -->
+                    <form id="checkout-form" onsubmit="submitOrder(event)" class="lg:col-span-7 bg-white rounded-2xl shadow-xs border border-espresso-200/80 p-6 sm:p-8 space-y-6">
+                        <div>
+                            <h2 class="font-brand text-2xl font-extrabold text-espresso-950">Finalizar Pedido Fictício</h2>
+                            <p class="text-xs text-espresso-600 mt-1">Preencha ou utilize os dados fictícios pré-preenchidos para gerar o comprovante.</p>
+                        </div>
+
+                        <!-- Dados do Cliente -->
+                        <div class="space-y-4">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-caramel-600 border-b border-espresso-100 pb-2">1. Dados do Comprador & Entrega</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-espresso-800 mb-1">Nome Completo</label>
+                                    <input type="text" id="chk-name" required value="Mariana Almeida Costa" class="w-full px-3.5 py-2.5 rounded-xl bg-espresso-50 border border-espresso-200 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-caramel-500">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-espresso-800 mb-1">E-mail para Nota Fiscal</label>
+                                    <input type="email" id="chk-email" required value="mariana.costa@exemplo.com.br" class="w-full px-3.5 py-2.5 rounded-xl bg-espresso-50 border border-espresso-200 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-caramel-500">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <div class="sm:col-span-2">
+                                    <label class="block text-xs font-bold text-espresso-800 mb-1">Endereço de Entrega</label>
+                                    <input type="text" id="chk-address" required value="Rua Pernambuco, 890 - Ap. 402, Funcionários" class="w-full px-3.5 py-2.5 rounded-xl bg-espresso-50 border border-espresso-200 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-caramel-500">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-espresso-800 mb-1">Cidade / UF</label>
+                                    <input type="text" id="chk-city" required value="Belo Horizonte - MG" class="w-full px-3.5 py-2.5 rounded-xl bg-espresso-50 border border-espresso-200 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-caramel-500">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Forma de Pagamento -->
+                        <div class="space-y-3">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-caramel-600 border-b border-espresso-100 pb-2">2. Forma de Pagamento</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="paymentMethod" value="PIX Instantâneo (Aprovação Imediata)" checked class="peer sr-only">
+                                    <div class="p-3.5 rounded-xl border-2 border-espresso-200 peer-checked:border-emerald-600 peer-checked:bg-emerald-50/50 transition-all text-center">
+                                        <span class="text-xl block mb-1">💠</span>
+                                        <span class="text-xs font-bold text-espresso-950 block">PIX</span>
+                                        <span class="text-[11px] text-emerald-700 font-semibold">Aprovação na hora</span>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="paymentMethod" value="Cartão de Crédito (3x sem juros)" class="peer sr-only">
+                                    <div class="p-3.5 rounded-xl border-2 border-espresso-200 peer-checked:border-caramel-600 peer-checked:bg-espresso-50 transition-all text-center">
+                                        <span class="text-xl block mb-1">💳</span>
+                                        <span class="text-xs font-bold text-espresso-950 block">Cartão de Crédito</span>
+                                        <span class="text-[11px] text-espresso-600">Até 3x sem juros</span>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="paymentMethod" value="Boleto Bancário Corporativo" class="peer sr-only">
+                                    <div class="p-3.5 rounded-xl border-2 border-espresso-200 peer-checked:border-caramel-600 peer-checked:bg-espresso-50 transition-all text-center">
+                                        <span class="text-xl block mb-1">📄</span>
+                                        <span class="text-xs font-bold text-espresso-950 block">Boleto Bancário</span>
+                                        <span class="text-[11px] text-espresso-600">Vencimento em 2 dias</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full py-4 px-6 rounded-xl font-extrabold text-sm sm:text-base bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg transition-all active:scale-98 flex items-center justify-center gap-2">
+                            <span>✅ Confirmar Pedido e Gerar Comprovante</span>
+                        </button>
+                    </form>
+
+                    <!-- Resumo do Pedido no Checkout (5 colunas) -->
+                    <div class="lg:col-span-5 bg-white rounded-2xl shadow-xs border border-espresso-200/80 p-6 sm:p-8 flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-bold text-lg text-espresso-950 pb-3 border-b border-espresso-100">Resumo da Compra</h3>
+                            <div id="checkout-summary-items" class="divide-y divide-espresso-100 my-4 max-h-72 overflow-y-auto">
+                                <!-- Itens via JS -->
+                            </div>
+                        </div>
+
+                        <div class="bg-espresso-50 p-4 rounded-xl space-y-2 text-sm border border-espresso-200/60">
+                            <div class="flex justify-between text-espresso-700">
+                                <span>Subtotal dos Produtos</span>
+                                <span id="chk-subtotal" class="font-semibold">R$ 0,00</span>
+                            </div>
+                            <div class="flex justify-between text-espresso-700">
+                                <span>Frete</span>
+                                <span id="chk-shipping" class="font-semibold">R$ 0,00</span>
+                            </div>
+                            <div class="flex justify-between text-lg font-extrabold text-espresso-950 pt-2 border-t border-espresso-200">
+                                <span>Total a Pagar</span>
+                                <span id="chk-total" class="text-emerald-700">R$ 0,00</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Dados Institucionais (Desenvolvimento) -->
-            <div class="bg-white rounded-2xl shadow-sm border border-coffee-200/70 p-6 sm:p-8">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-5 border-b border-coffee-100">
-                    <div>
-                        <span class="text-xs font-bold uppercase tracking-wider text-olive-600">Desenvolvimento Corporativo</span>
-                        <h2 class="text-xl sm:text-2xl font-extrabold text-coffee-950 mt-0.5">Identidade da Empresa</h2>
+            <!-- SUB-VIEW C: PÁGINA DE CONFIRMAÇÃO DE COMPRA (COMPROVANTE / NOTA FISCAL FICTÍCIA) -->
+            <div id="store-confirmation-view" class="hidden max-w-3xl mx-auto">
+                <div class="bg-white rounded-3xl shadow-lg border border-emerald-200 overflow-hidden">
+                    <!-- Topo Verde de Sucesso -->
+                    <div class="bg-gradient-to-r from-emerald-700 to-emerald-600 text-white p-6 sm:p-8 text-center">
+                        <div class="w-16 h-16 rounded-full bg-white/20 mx-auto flex items-center justify-center text-3xl mb-3">
+                            🎉
+                        </div>
+                        <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-emerald-900/40 text-emerald-100 mb-2">
+                            Pedido Confirmado com Sucesso!
+                        </span>
+                        <h2 class="font-brand text-2xl sm:text-3xl font-extrabold">Obrigado por comprar na SerraNobre!</h2>
+                        <p class="text-xs sm:text-sm text-emerald-100 mt-1.5">
+                            Seu pedido foi registrado e já foi contabilizado no painel de <strong>Faturamento Real</strong> da empresa.
+                        </p>
                     </div>
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-olive-50 text-olive-700 border border-olive-600/20">
-                        Cafés 100% Arábica • Pontuação SCA &gt; 85 pts
-                    </span>
+
+                    <!-- Corpo da Nota Fiscal Fictícia -->
+                    <div class="p-6 sm:p-8 space-y-6">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-espresso-50 border border-espresso-200">
+                            <div>
+                                <span class="text-[11px] font-bold uppercase tracking-wider text-espresso-500">Número do Pedido</span>
+                                <p id="conf-order-id" class="text-lg font-extrabold text-espresso-950 font-mono">#SN-2026-4829</p>
+                            </div>
+                            <div>
+                                <span class="text-[11px] font-bold uppercase tracking-wider text-espresso-500">Data & Hora</span>
+                                <p id="conf-order-date" class="text-sm font-bold text-espresso-900">23/11/2026 às 20:18</p>
+                            </div>
+                            <div>
+                                <span class="text-[11px] font-bold uppercase tracking-wider text-espresso-500">Status</span>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">Pago • Em Preparo</span>
+                            </div>
+                        </div>
+
+                        <!-- Dados do Emissor e Destinatário -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-espresso-700 border-b border-espresso-100 pb-5">
+                            <div>
+                                <p class="font-bold text-espresso-950 uppercase mb-1">Emissor (Empresa Fictícia)</p>
+                                <p>SerraNobre Cafés Especiais Ltda.</p>
+                                <p>CNPJ: 48.912.304/0001-72</p>
+                                <p>Av. Getúlio Vargas, 1420 — Savassi, BH/MG</p>
+                            </div>
+                            <div>
+                                <p class="font-bold text-espresso-950 uppercase mb-1">Destinatário & Pagamento</p>
+                                <p id="conf-customer-name" class="font-semibold text-espresso-900">Mariana Almeida Costa</p>
+                                <p id="conf-customer-address">Rua Pernambuco, 890 - BH/MG</p>
+                                <p id="conf-payment-method" class="text-emerald-700 font-semibold mt-0.5">PIX Instantâneo</p>
+                            </div>
+                        </div>
+
+                        <!-- Tabela de Itens da Nota -->
+                        <div>
+                            <h4 class="text-xs font-bold uppercase tracking-wider text-espresso-500 mb-3">Itens Adquiridos (Comprovante Fiscal Fictício)</h4>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-xs sm:text-sm">
+                                    <thead>
+                                        <tr class="border-b border-espresso-200 text-espresso-500">
+                                            <th class="py-2">Produto</th>
+                                            <th class="py-2 text-center">Qtd.</th>
+                                            <th class="py-2 text-right">Unitário</th>
+                                            <th class="py-2 text-right">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="conf-items-tbody" class="divide-y divide-espresso-100">
+                                        <!-- Via JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Totais do Comprovante -->
+                        <div class="bg-espresso-950 text-cream p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div class="text-xs text-espresso-300">
+                                Subtotal: <strong id="conf-subtotal" class="text-white">R$ 0,00</strong> • Frete: <strong id="conf-shipping" class="text-white">R$ 0,00</strong>
+                            </div>
+                            <div class="text-base sm:text-lg font-extrabold text-caramel-400">
+                                Total Pago: <span id="conf-total">R$ 0,00</span>
+                            </div>
+                        </div>
+
+                        <!-- Botões de Ação Pós-Compra -->
+                        <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 no-print">
+                            <button onclick="window.print()" class="w-full sm:w-auto px-5 py-3 rounded-xl text-xs sm:text-sm font-bold bg-espresso-100 hover:bg-espresso-200 text-espresso-950 transition-colors flex items-center justify-center gap-2">
+                                <span>🖨️ Imprimir Comprovante</span>
+                            </button>
+                            <div class="flex flex-col sm:flex-row w-full sm:w-auto gap-2.5">
+                                <button onclick="navigateTo('page-financeiro')" class="px-5 py-3 rounded-xl text-xs sm:text-sm font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 transition-colors">
+                                    📊 Ver Venda no Painel Financeiro
+                                </button>
+                                <button onclick="backToCatalog()" class="px-5 py-3 rounded-xl text-xs sm:text-sm font-bold bg-espresso-900 hover:bg-espresso-800 text-white transition-colors">
+                                    🛍️ Continuar Comprando
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- PÁGINA 2: SOBRE A EMPRESA & APRESENTAÇÃO DO PROJETO               -->
+        <!-- ================================================================= -->
+        <section id="page-empresa" class="page-section space-y-6">
+            
+            <!-- Bloco: Apresentação do Projeto -->
+            <div class="bg-white rounded-2xl shadow-xs border border-espresso-200/80 p-6 sm:p-8">
+                <div class="flex flex-wrap items-center gap-2 mb-3">
+                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-espresso-100 text-espresso-900">📚 Trabalho Final</span>
+                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900">🏆 Valor: 20 pontos</span>
+                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-900">📅 Data: 23 e 24 de Novembro</span>
+                </div>
+                <h2 class="font-brand text-2xl sm:text-3xl font-extrabold text-espresso-950">Apresentação do Projeto</h2>
+                <p class="mt-3 text-sm sm:text-base text-espresso-800 leading-relaxed">
+                    O presente trabalho consiste no desenvolvimento de um <strong>planejamento empresarial e financeiro completo</strong> para a empresa fictícia <strong>SerraNobre Cafés Especiais Ltda.</strong> O estudo abrange desde a definição estratégica do negócio (identidade, ramo de atuação, catálogo de produtos precificados, público-alvo e localização) até o levantamento detalhado dos custos mensais e anuais, projeções de faturamento versus resultados reais, planilhas gerenciais, gráficos analíticos e resolução de indicadores estatísticos de média aritmética.
+                </p>
+            </div>
+
+            <!-- Bloco: Desenvolvimento Corporativo -->
+            <div class="bg-white rounded-2xl shadow-xs border border-espresso-200/80 p-6 sm:p-8">
+                <span class="text-xs font-bold uppercase tracking-wider text-caramel-600">Desenvolvimento Empresarial</span>
+                <h2 class="font-brand text-2xl font-extrabold text-espresso-950 mt-0.5 mb-6">Estrutura e Identidade da Empresa</h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="p-5 rounded-2xl bg-espresso-50/80 border border-espresso-200/60">
+                        <span class="text-xs font-bold uppercase tracking-wider text-espresso-500">Nome da Empresa</span>
+                        <h3 class="text-lg font-extrabold text-espresso-950 mt-1">SerraNobre Cafés Especiais Ltda.</h3>
+                        <p class="text-xs sm:text-sm text-espresso-700 mt-1">CNPJ fictício: 48.912.304/0001-72 • Marca especializada em microlotes de café 100% Arábica de altitude.</p>
+                    </div>
+
+                    <div class="p-5 rounded-2xl bg-espresso-50/80 border border-espresso-200/60">
+                        <span class="text-xs font-bold uppercase tracking-wider text-espresso-500">Ramo de Atuação</span>
+                        <h3 class="text-lg font-extrabold text-espresso-950 mt-1">Torrefação Artesanal & Cafeteria Gourmet</h3>
+                        <p class="text-xs sm:text-sm text-espresso-700 mt-1">Beneficiamento, torra fresca semanal, venda direta em loja conceito, e-commerce nacional e fornecimento B2B.</p>
+                    </div>
+
+                    <div class="p-5 rounded-2xl bg-espresso-50/80 border border-espresso-200/60">
+                        <span class="text-xs font-bold uppercase tracking-wider text-espresso-500">Público-Alvo</span>
+                        <h3 class="text-lg font-extrabold text-espresso-950 mt-1">Apreciadores de Cafés Especiais & Corporativo</h3>
+                        <p class="text-xs sm:text-sm text-espresso-700 mt-1">Consumidores exigentes (24 a 58 anos, classes A e B), home-offices, escritórios corporativos e empórios gourmet.</p>
+                    </div>
+
+                    <div class="p-5 rounded-2xl bg-espresso-50/80 border border-espresso-200/60">
+                        <span class="text-xs font-bold uppercase tracking-wider text-espresso-500">Local da Empresa</span>
+                        <h3 class="text-lg font-extrabold text-espresso-950 mt-1">Av. Getúlio Vargas, 1420 — Savassi, BH/MG</h3>
+                        <p class="text-xs sm:text-sm text-espresso-700 mt-1">Região de alto fluxo comercial e gastronômico em Belo Horizonte, com fácil acesso logístico para entregas.</p>
+                    </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-6">
-                    <!-- Nome da Empresa -->
-                    <div class="p-5 rounded-2xl bg-coffee-50/70 border border-coffee-200/60">
-                        <div class="flex items-center gap-2.5 mb-2">
-                            <span class="text-xl">🏷️</span>
-                            <h3 class="text-xs font-bold uppercase tracking-wider text-coffee-600">Nome da Empresa</h3>
-                        </div>
-                        <p class="text-lg font-extrabold text-coffee-950">SerraNobre Cafés Especiais Ltda.</p>
-                        <p class="text-xs sm:text-sm text-coffee-700 mt-1">
-                            <strong>Nome Fantasia:</strong> SerraNobre Coffee Roasters • <strong>CNPJ:</strong> 48.912.304/0001-72
-                        </p>
-                    </div>
-
-                    <!-- Ramo de Atuação -->
-                    <div class="p-5 rounded-2xl bg-coffee-50/70 border border-coffee-200/60">
-                        <div class="flex items-center gap-2.5 mb-2">
-                            <span class="text-xl">⚙️</span>
-                            <h3 class="text-xs font-bold uppercase tracking-wider text-coffee-600">Ramo de Atuação</h3>
-                        </div>
-                        <p class="text-lg font-extrabold text-coffee-950">Torrefação Artesanal & Comércio de Cafés</p>
-                        <p class="text-xs sm:text-sm text-coffee-700 mt-1">
-                            Indústria alimentícia de beneficiamento/torra de grãos especiais 100% Arábica, loja conceito e clube de assinatura.
-                        </p>
-                    </div>
-
-                    <!-- Público-Alvo -->
-                    <div class="p-5 rounded-2xl bg-coffee-50/70 border border-coffee-200/60">
-                        <div class="flex items-center gap-2.5 mb-2">
-                            <span class="text-xl">🎯</span>
-                            <h3 class="text-xs font-bold uppercase tracking-wider text-coffee-600">Público-Alvo</h3>
-                        </div>
-                        <p class="text-base sm:text-lg font-extrabold text-coffee-950">Apreciadores de Cafés Especiais & Empresas</p>
-                        <p class="text-xs sm:text-sm text-coffee-700 mt-1">
-                            Consumidores finais (classes A e B, 24 a 55 anos), escritórios corporativos, empórios gourmet e cafeterias parceiras.
-                        </p>
-                    </div>
-
-                    <!-- Local da Empresa -->
-                    <div class="p-5 rounded-2xl bg-coffee-50/70 border border-coffee-200/60">
-                        <div class="flex items-center gap-2.5 mb-2">
-                            <span class="text-xl">📍</span>
-                            <h3 class="text-xs font-bold uppercase tracking-wider text-coffee-600">Local da Empresa</h3>
-                        </div>
-                        <p class="text-base sm:text-lg font-extrabold text-coffee-950">Av. Getúlio Vargas, 1420 — Savassi</p>
-                        <p class="text-xs sm:text-sm text-coffee-700 mt-1">
-                            Belo Horizonte - MG • Polo estratégico comercial com unidade integrada de torrefação envidraçada e loja conceito.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Catálogo de Produtos Vendidos -->
+                <!-- Tabela de Produtos Vendidos (Alinhados com a Loja) -->
                 <div class="mt-8">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
-                        <h3 class="text-base sm:text-lg font-extrabold text-coffee-950 flex items-center gap-2">
-                            <span>☕</span> Produtos Vendidos & Portfólio Comercial
-                        </h3>
-                        <span class="text-xs font-semibold text-coffee-800 bg-coffee-100 px-3 py-1 rounded-full">
-                            Volume Total Projetado: 1.640 un./mês • Ticket Médio: R$ 40,45
-                        </span>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <!-- Produto 1 -->
-                        <div class="p-5 rounded-2xl border border-coffee-200/80 bg-white shadow-sm flex flex-col justify-between hover:border-coffee-500 transition-colors">
-                            <div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-2xl">🫘</span>
-                                    <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-coffee-100 text-coffee-800">380 un./mês</span>
-                                </div>
-                                <h4 class="font-bold text-coffee-950 mt-3">Café Especial Torrado em Grãos (500g)</h4>
-                                <p class="text-xs text-coffee-700 mt-1.5">Torra média artesanal com notas sensoriais de chocolate ao leite e caramelo.</p>
-                            </div>
-                            <div class="mt-4 pt-3 border-t border-coffee-100 flex items-center justify-between">
-                                <span class="text-xs text-coffee-600">Preço de venda</span>
-                                <span class="text-base font-extrabold text-coffee-700">R$ 48,00</span>
-                            </div>
-                        </div>
-
-                        <!-- Produto 2 -->
-                        <div class="p-5 rounded-2xl border border-coffee-200/80 bg-white shadow-sm flex flex-col justify-between hover:border-coffee-500 transition-colors">
-                            <div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-2xl">🤎</span>
-                                    <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-olive-100 text-olive-800">650 un./mês</span>
-                                </div>
-                                <h4 class="font-bold text-coffee-950 mt-3">Café Moído Gourmet SerraNobre (250g)</h4>
-                                <p class="text-xs text-coffee-700 mt-1.5">Moagem média ideal para coador de papel, V60 e cafeteira italiana.</p>
-                            </div>
-                            <div class="mt-4 pt-3 border-t border-coffee-100 flex items-center justify-between">
-                                <span class="text-xs text-coffee-600">Preço de venda</span>
-                                <span class="text-base font-extrabold text-coffee-700">R$ 26,00</span>
-                            </div>
-                        </div>
-
-                        <!-- Produto 3 -->
-                        <div class="p-5 rounded-2xl border border-coffee-200/80 bg-white shadow-sm flex flex-col justify-between hover:border-coffee-500 transition-colors">
-                            <div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-2xl">🥡</span>
-                                    <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800">420 un./mês</span>
-                                </div>
-                                <h4 class="font-bold text-coffee-950 mt-3">Caixa Drip Coffee Individual (10 sachês)</h4>
-                                <p class="text-xs text-coffee-700 mt-1.5">Filtro individual portátil para preparo prático em escritórios e viagens.</p>
-                            </div>
-                            <div class="mt-4 pt-3 border-t border-coffee-100 flex items-center justify-between">
-                                <span class="text-xs text-coffee-600">Preço de venda</span>
-                                <span class="text-base font-extrabold text-coffee-700">R$ 34,00</span>
-                            </div>
-                        </div>
-
-                        <!-- Produto 4 -->
-                        <div class="p-5 rounded-2xl border border-coffee-200/80 bg-white shadow-sm flex flex-col justify-between hover:border-coffee-500 transition-colors">
-                            <div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-2xl">🎁</span>
-                                    <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-orange-100 text-orange-800">190 un./mês</span>
-                                </div>
-                                <h4 class="font-bold text-coffee-950 mt-3">Kit Degustação "Origens do Cerrado"</h4>
-                                <p class="text-xs text-coffee-700 mt-1.5">Caixa presenteável com 3 microlotes premiados de 150g + guia sensorial.</p>
-                            </div>
-                            <div class="mt-4 pt-3 border-t border-coffee-100 flex items-center justify-between">
-                                <span class="text-xs text-coffee-600">Preço de venda</span>
-                                <span class="text-base font-extrabold text-coffee-700">R$ 89,00</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ================================================================= -->
-        <!-- SEÇÃO 2: ESTRUTURA DE CUSTOS OPERACIONAIS (MENSAL E ANUAL)        -->
-        <!-- ================================================================= -->
-        <section id="sec-custos" class="tab-panel space-y-6">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                
-                <!-- Tabela Detalhada de Custos (8 colunas) -->
-                <div class="lg:col-span-8 bg-white rounded-2xl shadow-sm border border-coffee-200/70 p-6 sm:p-8">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-coffee-100">
-                        <div>
-                            <span class="text-xs font-bold uppercase tracking-wider text-coffee-600">Estrutura de Despesas</span>
-                            <h2 class="text-xl font-extrabold text-coffee-950">Custos Operacionais Detalhados</h2>
-                            <p class="text-xs text-coffee-700 mt-0.5">Levantamento mensal médio e projeção anual (12 meses) da SerraNobre.</p>
-                        </div>
-                        <button onclick="resetValues()" class="no-print text-xs font-semibold text-coffee-600 hover:text-coffee-900 underline self-start sm:self-auto">
-                            Restaurar valores originais
+                        <h3 class="text-lg font-extrabold text-espresso-950">☕ Produtos Vendidos (Preços Sincronizados com a Loja)</h3>
+                        <button onclick="navigateTo('page-loja')" class="text-xs font-bold text-caramel-600 hover:text-espresso-900 underline self-start sm:self-auto">
+                            Testar compra destes produtos na Loja Virtual →
                         </button>
                     </div>
-
-                    <div class="overflow-x-auto mt-5">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="bg-coffee-900 text-cream text-xs uppercase tracking-wider">
-                                    <th class="py-3.5 px-4 rounded-tl-xl">Centro de Custo</th>
-                                    <th class="py-3.5 px-4">Classificação</th>
-                                    <th class="py-3.5 px-4 text-right">Custo Mensal</th>
-                                    <th class="py-3.5 px-4 text-right">Custo Anual (x12)</th>
-                                    <th class="py-3.5 px-4 text-right rounded-tr-xl">Peso (%)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="custos-tbody" class="divide-y divide-coffee-100 text-sm">
-                                <!-- Preenchido via JS -->
-                            </tbody>
-                            <tfoot>
-                                <tr class="bg-coffee-100/80 text-coffee-950 font-extrabold text-sm border-t-2 border-coffee-300">
-                                    <td colspan="2" class="py-4 px-4 rounded-bl-xl">TOTAL DE CUSTOS OPERACIONAIS</td>
-                                    <td id="custo-total-mensal" class="py-4 px-4 text-right text-coffee-900">R$ 34.500,00</td>
-                                    <td id="custo-total-anual" class="py-4 px-4 text-right text-coffee-900">R$ 414.000,00</td>
-                                    <td class="py-4 px-4 text-right rounded-br-xl">100,0%</td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-
-                    <div class="mt-4 p-3.5 rounded-xl bg-coffee-50 border border-coffee-200/70 text-xs text-coffee-800 flex items-center gap-2.5">
-                        <span>💡</span>
-                        <span>Você pode alterar qualquer valor mensal diretamente na tabela acima para simular cenários de custo em tempo real.</span>
-                    </div>
-                </div>
-
-                <!-- Gráfico de Rosca dos Custos (4 colunas) -->
-                <div class="lg:col-span-4 bg-white rounded-2xl shadow-sm border border-coffee-200/70 p-6 sm:p-8 flex flex-col justify-between">
-                    <div>
-                        <span class="text-xs font-bold uppercase tracking-wider text-coffee-600">Análise Visual</span>
-                        <h3 class="text-lg font-extrabold text-coffee-950">Composição dos Custos</h3>
-                        <p class="text-xs text-coffee-700 mt-0.5">Representatividade de cada despesa no orçamento.</p>
-                    </div>
-
-                    <div class="relative h-64 w-full my-4 flex items-center justify-center">
-                        <canvas id="chartCustosRosca"></canvas>
-                    </div>
-
-                    <div class="p-3.5 rounded-xl bg-olive-50 border border-olive-600/20 text-xs text-olive-800">
-                        <strong>Análise Gerencial:</strong> A <strong>Matéria-prima</strong> (grãos verdes especiais e embalagens valvuladas) corresponde a <strong>64,9%</strong> dos custos, garantindo o padrão superior dos cafés SerraNobre.
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- ================================================================= -->
-        <!-- SEÇÃO 3: FATURAMENTO, RENDIMENTO & SIMULADOR (PROJETADO VS REAL)  -->
-        <!-- ================================================================= -->
-        <section id="sec-faturamento" class="tab-panel space-y-6">
-            
-            <!-- Cards de Indicadores Financeiros -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="bg-white p-5 rounded-2xl border border-coffee-200/80 shadow-sm">
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs font-bold uppercase tracking-wider text-coffee-600">Faturamento Mensal Projetado</span>
-                        <span class="p-2 rounded-xl bg-coffee-100 text-coffee-700 text-sm">🎯</span>
-                    </div>
-                    <p id="card-fat-proj-mensal" class="text-2xl font-extrabold text-coffee-950 mt-2">R$ 66.330,00</p>
-                    <p id="card-qtd-mensal" class="text-xs text-coffee-700 mt-1">1.640 unidades/mês • Ticket R$ 40,45</p>
-                </div>
-
-                <div class="bg-white p-5 rounded-2xl border border-coffee-200/80 shadow-sm">
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs font-bold uppercase tracking-wider text-coffee-600">Faturamento Anual Projetado</span>
-                        <span class="p-2 rounded-xl bg-amber-50 text-amber-700 text-sm">📅</span>
-                    </div>
-                    <p id="card-fat-proj-anual" class="text-2xl font-extrabold text-coffee-950 mt-2">R$ 795.960,00</p>
-                    <p id="card-qtd-anual" class="text-xs text-coffee-700 mt-1">19.680 unidades projetadas/ano</p>
-                </div>
-
-                <div class="bg-white p-5 rounded-2xl border border-emerald-200 shadow-sm">
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Faturamento Real (Anual)</span>
-                        <span class="p-2 rounded-xl bg-emerald-50 text-emerald-700 text-sm">💰</span>
-                    </div>
-                    <p id="card-fat-real-anual" class="text-2xl font-extrabold text-emerald-700 mt-2">R$ 821.040,00</p>
-                    <p id="card-fat-real-mensal" class="text-xs font-semibold text-emerald-800 mt-1">Média Real: R$ 68.420,00/mês (+3,15%)</p>
-                </div>
-
-                <div class="bg-gradient-to-br from-coffee-900 to-coffee-950 text-cream p-5 rounded-2xl shadow-md">
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs font-bold uppercase tracking-wider text-coffee-300">Rendimento / Lucro Líquido Real</span>
-                        <span class="p-2 rounded-xl bg-coffee-800 text-coffee-200 text-sm">🏆</span>
-                    </div>
-                    <p id="card-lucro-anual" class="text-2xl font-extrabold text-white mt-2">R$ 407.040,00</p>
-                    <p id="card-lucro-mensal" class="text-xs text-coffee-200 mt-1">Média: R$ 33.920,00/mês • Margem 49,6%</p>
-                </div>
-            </div>
-
-            <!-- Detalhamento por Produto + Simulador Executivo -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                
-                <!-- Tabela de Receita por Produto (7 colunas) -->
-                <div class="lg:col-span-7 bg-white rounded-2xl shadow-sm border border-coffee-200/70 p-6 sm:p-8">
-                    <span class="text-xs font-bold uppercase tracking-wider text-coffee-600">Composição da Receita</span>
-                    <h3 class="text-xl font-extrabold text-coffee-950 mt-0.5">Faturamento Projetado por Linha de Produto</h3>
-                    <p class="text-xs text-coffee-700 mt-0.5 mb-4">Cálculo detalhado do preço de venda multiplicado pela quantidade média vendida.</p>
 
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
+                        <table class="w-full text-left border-collapse text-xs sm:text-sm">
                             <thead>
-                                <tr class="bg-coffee-100 text-coffee-900 text-xs uppercase">
-                                    <th class="py-3 px-3 rounded-tl-lg">Produto</th>
-                                    <th class="py-3 px-3 text-right">Preço Venda</th>
-                                    <th class="py-3 px-3 text-right">Qtd. Mês</th>
-                                    <th class="py-3 px-3 text-right">Fat. Mensal</th>
-                                    <th class="py-3 px-3 text-right rounded-tr-lg">Fat. Anual</th>
+                                <tr class="bg-espresso-900 text-cream uppercase text-xs">
+                                    <th class="py-3 px-4 rounded-tl-xl">Produto</th>
+                                    <th class="py-3 px-4">Categoria</th>
+                                    <th class="py-3 px-4">Peso / Volume</th>
+                                    <th class="py-3 px-4 text-right rounded-tr-xl">Preço de Venda</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-coffee-100 text-xs sm:text-sm">
-                                <tr>
-                                    <td class="py-3 px-3 font-semibold text-coffee-950">Café Torrado em Grãos (500g)</td>
-                                    <td class="py-3 px-3 text-right">R$ 48,00</td>
-                                    <td class="py-3 px-3 text-right">380 un.</td>
-                                    <td class="py-3 px-3 text-right font-semibold">R$ 18.240,00</td>
-                                    <td class="py-3 px-3 text-right text-coffee-700">R$ 218.880,00</td>
+                            <tbody id="company-products-tbody" class="divide-y divide-espresso-100">
+                                <!-- Preenchido via JS com os mesmos 6 produtos da loja -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- PÁGINA 3: CUSTOS & FATURAMENTO (PROJETADO VS. REAL)               -->
+        <!-- ================================================================= -->
+        <section id="page-financeiro" class="page-section space-y-6">
+            
+            <!-- Cards de KPIs Financeiros -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white p-5 rounded-2xl border border-espresso-200/80 shadow-xs">
+                    <span class="text-xs font-bold uppercase tracking-wider text-rose-600">Custo Operacional</span>
+                    <p id="kpi-cost-monthly" class="text-2xl font-extrabold text-espresso-950 mt-1.5">R$ 34.500,00</p>
+                    <p id="kpi-cost-annual" class="text-xs text-espresso-600 mt-1">Total Anual: R$ 414.000,00</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-espresso-200/80 shadow-xs">
+                    <span class="text-xs font-bold uppercase tracking-wider text-caramel-600">Faturamento Projetado</span>
+                    <p id="kpi-proj-monthly" class="text-2xl font-extrabold text-espresso-950 mt-1.5">R$ 66.300,00</p>
+                    <p id="kpi-proj-annual" class="text-xs text-espresso-600 mt-1">Anual Projetado: R$ 795.600,00</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-emerald-200 shadow-xs">
+                    <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Faturamento Real (Anual)</span>
+                    <p id="kpi-real-annual" class="text-2xl font-extrabold text-emerald-700 mt-1.5">R$ 819.000,00</p>
+                    <p id="kpi-real-monthly" class="text-xs font-semibold text-emerald-800 mt-1">Média: R$ 68.250,00/mês (+2,94%)</p>
+                </div>
+
+                <div class="bg-espresso-950 text-cream p-5 rounded-2xl shadow-md">
+                    <span class="text-xs font-bold uppercase tracking-wider text-caramel-400">Lucro Líquido Real (Anual)</span>
+                    <p id="kpi-profit-annual" class="text-2xl font-extrabold text-white mt-1.5">R$ 405.000,00</p>
+                    <p id="kpi-profit-monthly" class="text-xs text-espresso-300 mt-1">Média: R$ 33.750,00/mês (Margem 49,5%)</p>
+                </div>
+            </div>
+
+            <!-- Grid Duplo: Tabela de Custos + Faturamento & Rendimento -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- Tabela de Custos Mensais e Anuais (7 colunas) -->
+                <div class="lg:col-span-7 bg-white rounded-2xl shadow-xs border border-espresso-200/80 p-6">
+                    <span class="text-xs font-bold uppercase tracking-wider text-rose-600">Despesas Operacionais</span>
+                    <h3 class="font-brand text-xl font-extrabold text-espresso-950 mt-0.5">Custos Mensais e Anuais Detalhados</h3>
+                    <p class="text-xs text-espresso-600 mt-0.5 mb-4">Levantamento fixo e variável da operação de torrefação e cafeteria.</p>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs sm:text-sm">
+                            <thead>
+                                <tr class="bg-espresso-900 text-cream uppercase text-xs">
+                                    <th class="py-3 px-3.5 rounded-tl-xl">Item de Custo</th>
+                                    <th class="py-3 px-3.5">Natureza</th>
+                                    <th class="py-3 px-3.5 text-right">Custo Mensal</th>
+                                    <th class="py-3 px-3.5 text-right">Custo Anual</th>
+                                    <th class="py-3 px-3.5 text-right rounded-tr-xl">%</th>
                                 </tr>
-                                <tr>
-                                    <td class="py-3 px-3 font-semibold text-coffee-950">Café Moído Gourmet (250g)</td>
-                                    <td class="py-3 px-3 text-right">R$ 26,00</td>
-                                    <td class="py-3 px-3 text-right">650 un.</td>
-                                    <td class="py-3 px-3 text-right font-semibold">R$ 16.900,00</td>
-                                    <td class="py-3 px-3 text-right text-coffee-700">R$ 202.800,00</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-3 px-3 font-semibold text-coffee-950">Caixa Drip Coffee (10 sachês)</td>
-                                    <td class="py-3 px-3 text-right">R$ 34,00</td>
-                                    <td class="py-3 px-3 text-right">420 un.</td>
-                                    <td class="py-3 px-3 text-right font-semibold">R$ 14.280,00</td>
-                                    <td class="py-3 px-3 text-right text-coffee-700">R$ 171.360,00</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-3 px-3 font-semibold text-coffee-950">Kit Degustação "Origens"</td>
-                                    <td class="py-3 px-3 text-right">R$ 89,00</td>
-                                    <td class="py-3 px-3 text-right">190 un.</td>
-                                    <td class="py-3 px-3 text-right font-semibold">R$ 16.910,00</td>
-                                    <td class="py-3 px-3 text-right text-coffee-700">R$ 202.920,00</td>
-                                </tr>
+                            </thead>
+                            <tbody id="costs-table-tbody" class="divide-y divide-espresso-100">
+                                <!-- Via JS -->
                             </tbody>
                             <tfoot>
-                                <tr class="bg-coffee-900 text-cream font-bold text-xs sm:text-sm">
-                                    <td class="py-3.5 px-3 rounded-bl-lg">TOTAL BASE PROJETADO</td>
-                                    <td class="py-3.5 px-3 text-right">R$ 40,45*</td>
-                                    <td class="py-3.5 px-3 text-right">1.640 un.</td>
-                                    <td class="py-3.5 px-3 text-right">R$ 66.330,00</td>
-                                    <td class="py-3.5 px-3 text-right rounded-br-lg">R$ 795.960,00</td>
+                                <tr class="bg-espresso-100 font-extrabold text-espresso-950 border-t-2 border-espresso-300">
+                                    <td colspan="2" class="py-3.5 px-3.5 rounded-bl-xl">TOTAL DE CUSTOS</td>
+                                    <td class="py-3.5 px-3.5 text-right">R$ 34.500,00</td>
+                                    <td class="py-3.5 px-3.5 text-right">R$ 414.000,00</td>
+                                    <td class="py-3.5 px-3.5 text-right rounded-br-xl">100%</td>
                                 </tr>
                             </tfoot>
                         </table>
                     </div>
-                    <p class="text-[11px] text-coffee-600 mt-2">*Ticket médio ponderado = R$ 66.330,00 ÷ 1.640 unidades = R$ 40,4451 por unidade.</p>
                 </div>
 
-                <!-- Simulador Interativo de Cenários (5 colunas) -->
-                <div class="lg:col-span-5 bg-white rounded-2xl shadow-sm border border-coffee-200/70 p-6 sm:p-8 flex flex-col justify-between">
+                <!-- Faturamento e Rendimento (5 colunas) -->
+                <div class="lg:col-span-5 bg-white rounded-2xl shadow-xs border border-espresso-200/80 p-6 flex flex-col justify-between space-y-4">
                     <div>
-                        <span class="text-xs font-bold uppercase tracking-wider text-olive-600">Ferramenta de Gestão</span>
-                        <h3 class="text-xl font-extrabold text-coffee-950 mt-0.5">Simulador de Faturamento</h3>
-                        <p class="text-xs text-coffee-700 mt-0.5">Ajuste os parâmetros abaixo para recalcular instantaneamente as projeções e a planilha anual.</p>
+                        <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Receitas & Rendimento</span>
+                        <h3 class="font-brand text-xl font-extrabold text-espresso-950 mt-0.5">Faturamento Projetado vs. Real</h3>
+                        <p class="text-xs text-espresso-600 mt-0.5">Baseado nos preços reais praticados na loja virtual SerraNobre.</p>
 
-                        <div class="mt-5 space-y-5">
-                            <!-- Controle de Volume Mensal -->
-                            <div class="p-4 rounded-xl bg-coffee-50 border border-coffee-200/70">
-                                <div class="flex justify-between items-center mb-1.5">
-                                    <label for="sim-volume" class="text-xs font-bold uppercase text-coffee-800">Volume Médio Mensal</label>
-                                    <span id="sim-volume-label" class="text-sm font-extrabold text-coffee-950">1.640 un./mês</span>
-                                </div>
-                                <input type="range" id="sim-volume" min="800" max="3000" step="20" value="1640" oninput="recalculateAll()" class="w-full accent-coffee-700 cursor-pointer">
-                                <div class="flex justify-between text-[11px] text-coffee-600 mt-1">
-                                    <span>800 un.</span>
-                                    <span>1.640 un. (Base)</span>
-                                    <span>3.000 un.</span>
-                                </div>
+                        <div class="mt-4 space-y-3 text-xs sm:text-sm">
+                            <div class="p-3.5 rounded-xl bg-espresso-50 border border-espresso-200/70 flex justify-between items-center">
+                                <span class="font-semibold text-espresso-800">Preço de Venda Médio (Ticket)</span>
+                                <strong class="text-base font-extrabold text-espresso-950">R$ 78,00 / pedido</strong>
                             </div>
 
-                            <!-- Controle de Reajuste de Preço (%) -->
-                            <div class="p-4 rounded-xl bg-coffee-50 border border-coffee-200/70">
-                                <div class="flex justify-between items-center mb-1.5">
-                                    <label for="sim-preco-pct" class="text-xs font-bold uppercase text-coffee-800">Variação no Preço de Venda</label>
-                                    <span id="sim-preco-label" class="text-sm font-extrabold text-coffee-950">0% (R$ 40,45)</span>
+                            <div class="p-3.5 rounded-xl bg-espresso-50 border border-espresso-200/70 flex justify-between items-center">
+                                <span class="font-semibold text-espresso-800">Quantidade Média Vendida (Proj.)</span>
+                                <strong class="text-base font-extrabold text-espresso-950">850 pedidos / mês</strong>
+                            </div>
+
+                            <div class="p-3.5 rounded-xl bg-amber-50 border border-amber-200 flex justify-between items-center">
+                                <div>
+                                    <span class="font-bold text-amber-950 block">Faturamento Mensal Projetado</span>
+                                    <span class="text-[11px] text-amber-800">850 pedidos × R$ 78,00</span>
                                 </div>
-                                <input type="range" id="sim-preco-pct" min="-20" max="30" step="5" value="0" oninput="recalculateAll()" class="w-full accent-coffee-700 cursor-pointer">
-                                <div class="flex justify-between text-[11px] text-coffee-600 mt-1">
-                                    <span>-20%</span>
-                                    <span>0% (Atual)</span>
-                                    <span>+30%</span>
+                                <strong class="text-base font-extrabold text-amber-950">R$ 66.300,00</strong>
+                            </div>
+
+                            <div class="p-3.5 rounded-xl bg-amber-50 border border-amber-200 flex justify-between items-center">
+                                <div>
+                                    <span class="font-bold text-amber-950 block">Faturamento Anual Projetado</span>
+                                    <span class="text-[11px] text-amber-800">10.200 pedidos/ano × R$ 78,00</span>
                                 </div>
+                                <strong class="text-base font-extrabold text-amber-950">R$ 795.600,00</strong>
+                            </div>
+
+                            <div class="p-4 rounded-xl bg-emerald-600 text-white shadow-sm space-y-1">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-bold uppercase text-xs tracking-wider text-emerald-100">Faturamento Anual Real</span>
+                                    <strong id="panel-real-annual-total" class="text-lg font-extrabold">R$ 819.000,00</strong>
+                                </div>
+                                <p id="panel-live-sales-note" class="text-[11px] text-emerald-100">
+                                    Média de 875 pedidos/mês (R$ 68.250,00/mês) + R$ 0,00 em compras simuladas na loja agora.
+                                </p>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="mt-6 pt-4 border-t border-coffee-100 flex items-center justify-between">
-                        <span class="text-xs text-coffee-700">Impacto refletido na Planilha Anual</span>
-                        <button onclick="resetValues()" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-coffee-100 hover:bg-coffee-200 text-coffee-900 transition-colors">
-                            Resetar Simulador
-                        </button>
                     </div>
                 </div>
 
@@ -593,63 +673,65 @@
         </section>
 
         <!-- ================================================================= -->
-        <!-- SEÇÃO 4: PLANILHA FINANCEIRA ANUAL & GRÁFICOS DE RESULTADOS       -->
+        <!-- PÁGINA 4: PLANILHA ANUAL DETALHADA & GRÁFICOS                     -->
         <!-- ================================================================= -->
-        <section id="sec-planilha" class="tab-panel space-y-6">
+        <section id="page-planilha" class="page-section space-y-6">
             
-            <!-- Gráfico Comparativo Anual -->
-            <div class="bg-white rounded-2xl shadow-sm border border-coffee-200/70 p-6 sm:p-8">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
-                    <div>
-                        <span class="text-xs font-bold uppercase tracking-wider text-coffee-600">Ilustração de Resultados</span>
-                        <h3 class="text-xl font-extrabold text-coffee-950">Desempenho Financeiro Mensal (Projetado vs. Real vs. Lucro)</h3>
-                        <p class="text-xs text-coffee-700">Comparação detalhada entre receitas projetadas, faturamento realizado, custos e lucro líquido.</p>
+            <!-- Gráficos Responsivos (Chart.js) -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Gráfico de Barras e Linhas (8 colunas) -->
+                <div class="lg:col-span-8 bg-white rounded-2xl shadow-xs border border-espresso-200/80 p-6">
+                    <span class="text-xs font-bold uppercase tracking-wider text-caramel-600">Ilustração Gráfica de Resultados</span>
+                    <h3 class="font-brand text-xl font-extrabold text-espresso-950 mt-0.5">Evolução Mensal: Custos, Faturamento (Projetado x Real) e Lucro</h3>
+                    <div class="relative h-72 sm:h-80 w-full mt-4">
+                        <canvas id="chartAnnualFinance"></canvas>
                     </div>
                 </div>
-                <div class="relative h-72 sm:h-80 w-full">
-                    <canvas id="chartAnualComparativo"></canvas>
+
+                <!-- Gráfico de Rosca de Custos (4 colunas) -->
+                <div class="lg:col-span-4 bg-white rounded-2xl shadow-xs border border-espresso-200/80 p-6 flex flex-col justify-between">
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-rose-600">Divisão Orçamentária</span>
+                        <h3 class="font-brand text-xl font-extrabold text-espresso-950 mt-0.5">Composição dos Custos</h3>
+                    </div>
+                    <div class="relative h-60 w-full my-3">
+                        <canvas id="chartCostsPie"></canvas>
+                    </div>
+                    <p class="text-xs text-espresso-600 bg-espresso-50 p-3 rounded-xl">
+                        A <strong>Matéria-prima</strong> (grãos especiais crus e embalagens) corresponde a <strong>53,6%</strong> dos custos totais.
+                    </p>
                 </div>
             </div>
 
-            <!-- Planilha Financeira Completa -->
-            <div class="bg-white rounded-2xl shadow-sm border border-coffee-200/70 p-6 sm:p-8">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-coffee-100">
+            <!-- Planilha Anual Detalhada -->
+            <div class="bg-white rounded-2xl shadow-xs border border-espresso-200/80 p-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-espresso-100">
                     <div>
-                        <span class="text-xs font-bold uppercase tracking-wider text-olive-600">Demonstrativo Contábil & Gerencial</span>
-                        <h3 class="text-xl font-extrabold text-coffee-950">Planilha Detalhada de Custos e Ganhos (Mensal, Média e Anual)</h3>
+                        <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Demonstrativo Anual Detalhado</span>
+                        <h3 class="font-brand text-xl font-extrabold text-espresso-950">Planilha de Custos e Ganhos (Mensal, Média e Total Anual)</h3>
                     </div>
-
-                    <!-- Filtros de Período e Exportação CSV -->
-                    <div class="flex flex-wrap items-center gap-2 no-print">
-                        <div class="inline-flex rounded-xl bg-coffee-100 p-1">
-                            <button onclick="setPeriodFilter('all')" id="filter-all" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-coffee-800 text-white transition-all">12 Meses</button>
-                            <button onclick="setPeriodFilter('s1')" id="filter-s1" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-bold text-coffee-800 hover:text-coffee-950 transition-all">1º Semestre</button>
-                            <button onclick="setPeriodFilter('s2')" id="filter-s2" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-bold text-coffee-800 hover:text-coffee-950 transition-all">2º Semestre</button>
-                        </div>
-                        <button onclick="exportCSV()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-olive-600 hover:bg-olive-700 text-white transition-all">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                            Exportar CSV
-                        </button>
-                    </div>
+                    <button onclick="window.print()" class="no-print self-start sm:self-auto px-4 py-2 rounded-xl text-xs font-bold bg-espresso-100 hover:bg-espresso-200 text-espresso-900 transition-colors">
+                        🖨️ Imprimir Planilha
+                    </button>
                 </div>
 
-                <div class="overflow-x-auto mt-5">
-                    <table class="w-full text-left border-collapse whitespace-nowrap">
+                <div class="overflow-x-auto mt-4">
+                    <table class="w-full text-left border-collapse whitespace-nowrap text-xs sm:text-sm">
                         <thead>
-                            <tr class="bg-coffee-900 text-cream text-xs uppercase tracking-wider">
-                                <th class="py-3.5 px-4 rounded-tl-xl">Mês / Período</th>
-                                <th class="py-3.5 px-4 text-right">Qtd. Vendida</th>
-                                <th class="py-3.5 px-4 text-right">Custos Mensais</th>
+                            <tr class="bg-espresso-950 text-cream uppercase text-xs">
+                                <th class="py-3.5 px-4 rounded-tl-xl">Mês</th>
+                                <th class="py-3.5 px-4 text-right">Pedidos Reais</th>
+                                <th class="py-3.5 px-4 text-right">Custo Mensal</th>
                                 <th class="py-3.5 px-4 text-right">Fat. Projetado</th>
                                 <th class="py-3.5 px-4 text-right">Fat. Real</th>
-                                <th class="py-3.5 px-4 text-right">Desempenho</th>
+                                <th class="py-3.5 px-4 text-right">Variação</th>
                                 <th class="py-3.5 px-4 text-right rounded-tr-xl">Lucro Líquido Real</th>
                             </tr>
                         </thead>
-                        <tbody id="planilha-tbody" class="divide-y divide-coffee-100 text-xs sm:text-sm">
-                            <!-- Preenchido via JS -->
+                        <tbody id="annual-sheet-tbody" class="divide-y divide-espresso-100">
+                            <!-- Via JS -->
                         </tbody>
-                        <tfoot id="planilha-tfoot" class="text-xs sm:text-sm font-extrabold">
+                        <tfoot id="annual-sheet-tfoot" class="font-extrabold">
                             <!-- Média Mensal e Total Anual via JS -->
                         </tfoot>
                     </table>
@@ -658,111 +740,96 @@
         </section>
 
         <!-- ================================================================= -->
-        <!-- SEÇÃO 5: ATIVIDADE COMPLEMENTAR — MÉDIA ARITMÉTICA                -->
+        <!-- PÁGINA 5: ATIVIDADE DE MÉDIA ARITMÉTICA                           -->
         <!-- ================================================================= -->
-        <section id="sec-atividade" class="tab-panel space-y-6">
+        <section id="page-atividade" class="page-section space-y-6">
             
-            <!-- Banner da Atividade -->
-            <div class="bg-gradient-to-r from-coffee-900 to-olive-800 text-cream rounded-2xl p-6 sm:p-8 shadow-md">
-                <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-white/15 text-cream border border-white/20 mb-2">
+            <div class="bg-gradient-to-r from-espresso-950 to-espresso-800 text-cream rounded-2xl p-6 sm:p-8 shadow-md">
+                <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-caramel-500/20 text-caramel-400 border border-caramel-400/30 mb-2">
                     📐 Atividade Complementar • Matemática Aplicada
                 </span>
-                <h2 class="text-xl sm:text-2xl font-extrabold">Resolução de Média Aritmética Simples</h2>
-                <p class="mt-2 text-sm text-coffee-100 max-w-3xl">
-                    Assim como calculamos a média mensal de vendas e custos da <strong>SerraNobre Cafés Especiais</strong>, a <strong>Média Aritmética ($\bar{x}$)</strong> é obtida somando todos os valores observados e dividindo o resultado pela quantidade total de elementos:
+                <h2 class="font-brand text-2xl sm:text-3xl font-extrabold">Resolução de Média Aritmética</h2>
+                <p class="mt-2 text-xs sm:text-sm text-espresso-200 max-w-3xl">
+                    A <strong>Média Aritmética Simples ($\bar{x}$)</strong> é calculada pela soma de todos os valores de um conjunto dividida pela quantidade total de elementos observados: <code class="bg-espresso-900 px-2 py-0.5 rounded text-caramel-400">x̄ = (x₁ + x₂ + ... + xₙ) ÷ n</code>.
                 </p>
-                <div class="mt-4 inline-block bg-coffee-950/60 border border-coffee-400/30 rounded-xl px-4 py-2.5 text-sm font-mono text-coffee-200">
-                    x̄ = (x₁ + x₂ + x₃ + ... + xₙ) ÷ n
-                </div>
             </div>
 
-            <!-- Grid das 2 Questões -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 
-                <!-- QUESTÃO 1: Notas das Salas de Aula -->
-                <div class="bg-white rounded-2xl shadow-sm border border-coffee-200/70 p-6 sm:p-8 flex flex-col justify-between">
+                <!-- QUESTÃO 1 -->
+                <div class="bg-white rounded-2xl shadow-xs border border-espresso-200/80 p-6 flex flex-col justify-between space-y-4">
                     <div>
-                        <div class="flex items-center justify-between pb-4 border-b border-coffee-100">
-                            <span class="px-3 py-1 rounded-lg text-xs font-bold bg-coffee-100 text-coffee-900">Questão 01</span>
-                            <span class="text-xs font-semibold text-coffee-600">Avaliação Escolar</span>
+                        <div class="flex items-center justify-between pb-3 border-b border-espresso-100">
+                            <span class="px-3 py-1 rounded-lg text-xs font-bold bg-espresso-100 text-espresso-900">Questão 01</span>
+                            <span class="text-xs font-semibold text-espresso-500">Média das Notas Escolares</span>
                         </div>
 
-                        <div class="mt-4 p-4 rounded-xl bg-coffee-50 border-l-4 border-coffee-600 text-sm text-coffee-900 leading-relaxed">
+                        <div class="mt-4 p-4 rounded-xl bg-espresso-50 border-l-4 border-caramel-600 text-xs sm:text-sm text-espresso-900 leading-relaxed">
                             <strong>Enunciado:</strong> "Uma escola tem 12 salas de aula e as salas tiveram as seguintes notas: <strong>7, 8, 9, 10, 6, 5, 8, 9, 7, 4 e 10</strong>. Qual a média da escola?"
                         </div>
 
-                        <!-- Gráfico das Notas -->
-                        <div class="mt-5">
-                            <p class="text-xs font-bold uppercase tracking-wider text-coffee-600 mb-2">Distribuição das Notas Registradas (11 valores):</p>
+                        <!-- Gráfico das Notas por Sala -->
+                        <div class="mt-4">
+                            <p class="text-xs font-bold uppercase tracking-wider text-espresso-500 mb-2">Notas Registradas por Sala:</p>
                             <div class="relative h-44 w-full">
-                                <canvas id="chartNotasEscola"></canvas>
+                                <canvas id="chartSchoolGrades"></canvas>
                             </div>
                         </div>
 
-                        <!-- Passo a Passo -->
-                        <div class="mt-5 space-y-3 text-sm">
-                            <div class="p-3.5 rounded-xl bg-coffee-50/70 border border-coffee-200/60">
-                                <p class="font-bold text-coffee-950">1º Passo — Soma de todas as notas informadas:</p>
-                                <p class="text-coffee-800 font-mono text-xs sm:text-sm mt-1">
-                                    7 + 8 + 9 + 10 + 6 + 5 + 8 + 9 + 7 + 4 + 10 = <strong class="text-coffee-950">83</strong>
-                                </p>
+                        <!-- Resolução Passo a Passo -->
+                        <div class="mt-4 space-y-2.5 text-xs sm:text-sm">
+                            <div class="p-3.5 rounded-xl bg-espresso-50/70 border border-espresso-200/60">
+                                <p class="font-bold text-espresso-950">1º Passo — Soma das 11 notas listadas:</p>
+                                <p class="font-mono text-espresso-800 mt-1">7 + 8 + 9 + 10 + 6 + 5 + 8 + 9 + 7 + 4 + 10 = <strong>83</strong></p>
                             </div>
-
-                            <div class="p-3.5 rounded-xl bg-olive-50 border border-olive-600/30">
-                                <p class="font-bold text-olive-800">2º Passo — Divisão pela quantidade de termos (n = 11):</p>
-                                <p class="text-olive-800 font-mono text-xs sm:text-sm mt-1">
-                                    Média = 83 ÷ 11 = <strong class="text-lg text-olive-800">7,55</strong> (7,545...)
-                                </p>
+                            <div class="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200">
+                                <p class="font-bold text-emerald-950">2º Passo — Cálculo da Média (dividindo pelas 11 notas fornecidas):</p>
+                                <p class="font-mono text-emerald-900 mt-1">Média = 83 ÷ 11 = <strong class="text-base">7,55</strong> (aprox. 7,545)</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="mt-5 p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900">
-                        <strong>Observação Metodológica:</strong> O enunciado cita 12 salas, porém apresenta exatamente <strong>11 notas</strong> na sequência. Considerando os 11 dados fornecidos, a média é <strong>7,55</strong>. <em>(Caso se considere uma 12ª sala com nota zero, 83 ÷ 12 = 6,92).</em>
+                    <div class="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-950">
+                        <strong>Nota Importante:</strong> Embora o enunciado mencione 12 salas, foram listadas exatamente <strong>11 notas</strong>. Com base nas 11 notas apresentadas, a média é <strong>7,55</strong>. <em>(Projeção caso a 12ª sala tivesse nota 0: 83 ÷ 12 = <strong>6,92</strong>).</em>
                     </div>
                 </div>
 
-                <!-- QUESTÃO 2: Torneio de Futebol -->
-                <div class="bg-white rounded-2xl shadow-sm border border-coffee-200/70 p-6 sm:p-8 flex flex-col justify-between">
+                <!-- QUESTÃO 2 -->
+                <div class="bg-white rounded-2xl shadow-xs border border-espresso-200/80 p-6 flex flex-col justify-between space-y-4">
                     <div>
-                        <div class="flex items-center justify-between pb-4 border-b border-coffee-100">
-                            <span class="px-3 py-1 rounded-lg text-xs font-bold bg-olive-100 text-olive-800">Questão 02</span>
-                            <span class="text-xs font-semibold text-coffee-600">Estatística Esportiva</span>
+                        <div class="flex items-center justify-between pb-3 border-b border-espresso-100">
+                            <span class="px-3 py-1 rounded-lg text-xs font-bold bg-emerald-100 text-emerald-900">Questão 02</span>
+                            <span class="text-xs font-semibold text-espresso-500">Média de Gols no Torneio</span>
                         </div>
 
-                        <div class="mt-4 p-4 rounded-xl bg-coffee-50 border-l-4 border-olive-600 text-sm text-coffee-900 leading-relaxed">
+                        <div class="mt-4 p-4 rounded-xl bg-espresso-50 border-l-4 border-emerald-600 text-xs sm:text-sm text-espresso-900 leading-relaxed">
                             <strong>Enunciado:</strong> "Um time de futebol realizou um torneio e resolveram descobrir a média de gols feitos e anotaram a quantidade de gols: <strong>3, 2, 2, 0, 4, 6, 3 e 4</strong>."
                         </div>
 
-                        <!-- Gráfico dos Gols -->
-                        <div class="mt-5">
-                            <p class="text-xs font-bold uppercase tracking-wider text-coffee-600 mb-2">Gols Marcados por Partida (8 jogos):</p>
+                        <!-- Gráfico de Barras da Campanha -->
+                        <div class="mt-4">
+                            <p class="text-xs font-bold uppercase tracking-wider text-espresso-500 mb-2">Gols Marcados por Partida (8 Jogos):</p>
                             <div class="relative h-44 w-full">
-                                <canvas id="chartGolsTorneio"></canvas>
+                                <canvas id="chartTournamentGoals"></canvas>
                             </div>
                         </div>
 
-                        <!-- Passo a Passo -->
-                        <div class="mt-5 space-y-3 text-sm">
-                            <div class="p-3.5 rounded-xl bg-coffee-50/70 border border-coffee-200/60">
-                                <p class="font-bold text-coffee-950">1º Passo — Soma total dos gols nas 8 partidas:</p>
-                                <p class="text-coffee-800 font-mono text-xs sm:text-sm mt-1">
-                                    3 + 2 + 2 + 0 + 4 + 6 + 3 + 4 = <strong class="text-coffee-950">24 gols</strong>
-                                </p>
+                        <!-- Resolução Passo a Passo -->
+                        <div class="mt-4 space-y-2.5 text-xs sm:text-sm">
+                            <div class="p-3.5 rounded-xl bg-espresso-50/70 border border-espresso-200/60">
+                                <p class="font-bold text-espresso-950">1º Passo — Soma total de gols nas 8 partidas:</p>
+                                <p class="font-mono text-espresso-800 mt-1">3 + 2 + 2 + 0 + 4 + 6 + 3 + 4 = <strong>24 gols</strong></p>
                             </div>
-
-                            <div class="p-3.5 rounded-xl bg-olive-50 border border-olive-600/30">
-                                <p class="font-bold text-olive-800">2º Passo — Divisão pelo número de partidas (n = 8):</p>
-                                <p class="text-olive-800 font-mono text-xs sm:text-sm mt-1">
-                                    Média = 24 ÷ 8 = <strong class="text-lg text-olive-800">3,0 gols por partida</strong>
-                                </p>
+                            <div class="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200">
+                                <p class="font-bold text-emerald-950">2º Passo — Divisão pelo número de partidas (n = 8):</p>
+                                <p class="font-mono text-emerald-900 mt-1">Média = 24 ÷ 8 = <strong class="text-base">3,0 gols por partida</strong></p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="mt-5 p-3.5 rounded-xl bg-coffee-100/70 text-xs text-coffee-900 flex items-center justify-between">
-                        <span>⚽ Desempenho Médio no Torneio:</span>
-                        <span class="font-extrabold text-olive-700 text-sm">3,0 gols / jogo</span>
+                    <div class="p-3.5 rounded-xl bg-espresso-100 text-xs text-espresso-950 flex items-center justify-between">
+                        <span>⚽ Resultado Final do Torneio:</span>
+                        <strong class="text-sm text-emerald-800">3,0 gols / jogo</strong>
                     </div>
                 </div>
 
@@ -772,407 +839,624 @@
     </main>
 
     <!-- ===================================================================== -->
-    <!-- RODAPÉ CORPORATIVO                                                    -->
+    <!-- RODAPÉ                                                                -->
     <!-- ===================================================================== -->
-    <footer class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 border-t border-coffee-200 mt-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-coffee-700">
-        <p><strong>SerraNobre Cafés Especiais Ltda.</strong> • Av. Getúlio Vargas, 1420, Savassi — Belo Horizonte/MG</p>
-        <p>Planejamento Empresarial & Financeiro • Avaliação: 20 Pontos (23 e 24 de Novembro)</p>
+    <footer class="bg-espresso-950 text-espresso-300 border-t border-espresso-900 py-6 mt-10 no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs">
+            <p><strong class="text-white">SerraNobre Cafés Especiais Ltda.</strong> • CNPJ 48.912.304/0001-72 • Belo Horizonte - MG</p>
+            <p>Trabalho Final (Valor: 20 pontos) • Apresentação: 23 e 24 de Novembro</p>
+        </div>
     </footer>
 
     <!-- ===================================================================== -->
-    <!-- JAVASCRIPT: LÓGICA FINANCEIRA, PLANILHA DINÂMICA E GRÁFICOS           -->
+    <!-- JAVASCRIPT: LOJA, CARRINHO, CHECKOUT E INTEGRAÇÃO FINANCEIRA          -->
     <!-- ===================================================================== -->
     <script>
-        // 1. Dados base dos custos operacionais da SerraNobre
-        const defaultCosts = [
-            { id: 'aluguel', name: 'Aluguel (Galpão Torrefação + Loja)', category: 'Fixo', monthly: 5800, color: '#3c2117' },
-            { id: 'agua_luz', name: 'Água e Luz (Energia Trifásica Torradores)', category: 'Fixo/Var.', monthly: 1950, color: '#c87544' },
-            { id: 'materia_prima', name: 'Matéria-prima (Grãos Verdes & Embalagens)', category: 'Variável', monthly: 22400, color: '#556b2f' },
-            { id: 'transporte', name: 'Transporte e Logística (Frete & E-commerce)', category: 'Variável', monthly: 3150, color: '#d49265' },
-            { id: 'manutencao', name: 'Manutenção de Equipamentos (Torradores/Moinhos)', category: 'Fixo', monthly: 1200, color: '#7a3b29' }
+        // 1. Catálogo Oficial da Loja Virtual SerraNobre (6 Produtos com preços exatos)
+        const storeProducts = [
+            {
+                id: 'prod-1',
+                name: 'Café Bourbon Amarelo',
+                weight: '250g',
+                category: 'Grãos Especiais',
+                price: 48.00,
+                badge: '87 pts SCA',
+                icon: '🫘',
+                notes: 'Notas de mel silvestre, amêndoas torradas e acidez cítrica suave. Torra média.'
+            },
+            {
+                id: 'prod-2',
+                name: 'Café Catuaí Vermelho',
+                weight: '500g',
+                category: 'Moídos',
+                price: 79.00,
+                badge: 'Mais Vendido',
+                icon: '🤎',
+                notes: 'Moagem média para coador. Corpo aveludado com notas intensas de chocolate ao leite.'
+            },
+            {
+                id: 'prod-3',
+                name: 'Blend SerraNobre Espresso',
+                weight: '1kg',
+                category: 'Grãos Especiais',
+                price: 138.00,
+                badge: 'Linha Barista',
+                icon: '☕',
+                notes: 'Crema densa e persistente, ideal para máquinas de espresso e moka italiana.'
+            },
+            {
+                id: 'prod-4',
+                name: 'Kit Degustação 3 Microlotes',
+                weight: '3x 150g',
+                category: 'Kits',
+                price: 125.00,
+                badge: 'Presenteável',
+                icon: '🎁',
+                notes: 'Caixa rígida exclusiva com 3 origens premiadas do Cerrado e Sul de Minas.'
+            },
+            {
+                id: 'prod-5',
+                name: 'Caixa 20 Cápsulas Compatíveis',
+                weight: '20 un. (110g)',
+                category: 'Cápsulas',
+                price: 44.00,
+                badge: 'Alumínio 100%',
+                icon: '💊',
+                notes: 'Compatível com sistema Nespresso®. Extração equilibrada com notas de caramelo.'
+            },
+            {
+                id: 'prod-6',
+                name: 'Cold Brew Garrafa',
+                weight: '500ml',
+                category: 'Kits',
+                price: 26.00,
+                badge: 'Pronto p/ Beber',
+                icon: '🧊',
+                notes: 'Infusão a frio por 18 horas. Baixíssima acidez, refrescante e naturalmente adocicado.'
+            }
         ];
 
-        let currentCosts = JSON.parse(JSON.stringify(defaultCosts));
-        const baseMonthlyUnits = 1640;
-        const baseProjectedMonthlyRev = 66330;
-        const baseAvgPrice = baseProjectedMonthlyRev / baseMonthlyUnits; // R$ 40,44512...
-
-        // Sazonalidade realista dos 12 meses (Soma dos fatores reais = 12.3781 -> +3,15% acima do projetado = R$ 821.040,00)
-        // Custos mantêm média exata de R$ 34.500,00/mês (R$ 414.000,00/ano)
-        const monthlyCurve = [
-            { month: 'Janeiro',   sem: 's1', costFactor: 0.96, realUnits: 1480, realRev: 59850 },
-            { month: 'Fevereiro', sem: 's1', costFactor: 0.97, realUnits: 1510, realRev: 61060 },
-            { month: 'Março',     sem: 's1', costFactor: 0.98, realUnits: 1580, realRev: 63900 },
-            { month: 'Abril',     sem: 's1', costFactor: 0.99, realUnits: 1620, realRev: 65520 },
-            { month: 'Maio',      sem: 's1', costFactor: 1.00, realUnits: 1680, realRev: 67950 },
-            { month: 'Junho',     sem: 's1', costFactor: 1.01, realUnits: 1740, realRev: 70380 },
-            { month: 'Julho',     sem: 's2', costFactor: 1.02, realUnits: 1790, realRev: 72400 },
-            { month: 'Agosto',    sem: 's2', costFactor: 1.01, realUnits: 1720, realRev: 69570 },
-            { month: 'Setembro',  sem: 's2', costFactor: 1.00, realUnits: 1690, realRev: 68350 },
-            { month: 'Outubro',   sem: 's2', costFactor: 1.01, realUnits: 1750, realRev: 70780 },
-            { month: 'Novembro',  sem: 's2', costFactor: 1.02, realUnits: 1840, realRev: 74420 },
-            { month: 'Dezembro',  sem: 's2', costFactor: 1.03, realUnits: 1900, realRev: 76860 }
+        // 2. Custos Operacionais Mensais e Anuais (Exatos conforme solicitado)
+        const operationalCosts = [
+            { name: 'Aluguel (Torrefação + Loja Conceito)', type: 'Fixo', monthly: 6800, color: '#3c2117' },
+            { name: 'Água e Luz (Energia Trifásica Torradores)', type: 'Fixo/Var.', monthly: 2400, color: '#c87544' },
+            { name: 'Matéria-prima (Grãos Verdes & Embalagens)', type: 'Variável', monthly: 18500, color: '#556b2f' },
+            { name: 'Transporte e Logística (Entregas & Frete)', type: 'Variável', monthly: 4300, color: '#e0a96d' },
+            { name: 'Manutenção de Equipamentos', type: 'Fixo', monthly: 2500, color: '#7a3b29' }
         ];
 
-        let periodFilter = 'all';
-        let lastCalculatedRows = [];
+        // 3. Dados Anuais Base (Jan a Dez):
+        // Custos = R$ 34.500/mês -> R$ 414.000/ano
+        // Fat. Projetado = 850 ped. x R$ 78,00 = R$ 66.300/mês -> R$ 795.600/ano
+        // Fat. Real Base = média 875 ped./mês (10.500 ped./ano) x R$ 78,00 = R$ 68.250/mês -> R$ 819.000/ano
+        const annualBaseMonths = [
+            { month: 'Janeiro',   cost: 34500, proj: 66300, realOrders: 810, realRev: 63180 },
+            { month: 'Fevereiro', cost: 34500, proj: 66300, realOrders: 825, realRev: 64350 },
+            { month: 'Março',     cost: 34500, proj: 66300, realOrders: 845, realRev: 65910 },
+            { month: 'Abril',     cost: 34500, proj: 66300, realOrders: 860, realRev: 67080 },
+            { month: 'Maio',      cost: 34500, proj: 66300, realOrders: 875, realRev: 68250 },
+            { month: 'Junho',     cost: 34500, proj: 66300, realOrders: 890, realRev: 69420 },
+            { month: 'Julho',     cost: 34500, proj: 66300, realOrders: 910, realRev: 70980 },
+            { month: 'Agosto',    cost: 34500, proj: 66300, realOrders: 880, realRev: 68640 },
+            { month: 'Setembro',  cost: 34500, proj: 66300, realOrders: 870, realRev: 67860 },
+            { month: 'Outubro',   cost: 34500, proj: 66300, realOrders: 895, realRev: 69810 },
+            { month: 'Novembro',  cost: 34500, proj: 66300, realOrders: 915, realRev: 71370 },
+            { month: 'Dezembro',  cost: 34500, proj: 66300, realOrders: 925, realRev: 72150 }
+        ];
 
-        // Instâncias Chart.js
-        let chartCustosInstance = null;
-        let chartAnualInstance = null;
-        let chartNotasInstance = null;
-        let chartGolsInstance = null;
+        // Estado da Aplicação
+        let selectedCategory = 'Todos';
+        let cart = [
+            { productId: 'prod-1', qty: 1 },
+            { productId: 'prod-2', qty: 1 }
+        ]; // Inicia com 2 itens para facilitar demonstração imediata
+        let liveOrdersCount = 0;
+        let liveSalesAmount = 0;
+
+        // Instâncias dos gráficos
+        let chartAnnualInstance = null;
+        let chartCostsPieInstance = null;
+        let chartSchoolInstance = null;
+        let chartTournamentInstance = null;
 
         // Formatador BRL
-        function toBRL(val) {
+        function formatBRL(val) {
             return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         }
 
         // Notificação Toast
-        function showToast(message) {
-            const box = document.getElementById('toast-box');
-            document.getElementById('toast-msg').textContent = message;
-            box.classList.remove('translate-y-24', 'opacity-0');
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').textContent = msg;
+            toast.classList.remove('translate-y-24', 'opacity-0');
             setTimeout(() => {
-                box.classList.add('translate-y-24', 'opacity-0');
-            }, 3000);
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 2800);
         }
 
-        // Navegação entre abas
-        function openTab(tabId) {
-            if (document.body.classList.contains('presentation-mode')) {
-                document.body.classList.remove('presentation-mode');
-                document.getElementById('txt-presentation').textContent = 'Visão Completa (Apresentação)';
-            }
-
-            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-            const target = document.getElementById(tabId);
+        // Navegação entre as 5 Páginas
+        function navigateTo(pageId) {
+            document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
+            const target = document.getElementById(pageId);
             if (target) target.classList.add('active');
 
-            document.querySelectorAll('.nav-pill').forEach(btn => {
-                btn.classList.remove('bg-coffee-600', 'text-white', 'shadow-sm');
-                btn.classList.add('text-coffee-200', 'hover:text-white', 'hover:bg-coffee-800');
+            document.querySelectorAll('.nav-tab').forEach(btn => {
+                btn.classList.remove('bg-caramel-600', 'text-white', 'shadow-xs', 'font-bold');
+                btn.classList.add('text-espresso-200', 'hover:text-white', 'hover:bg-espresso-900', 'font-semibold');
             });
 
-            const activeBtn = document.getElementById('tab-' + tabId);
-            if (activeBtn) {
-                activeBtn.classList.remove('text-coffee-200', 'hover:text-white', 'hover:bg-coffee-800');
-                activeBtn.classList.add('bg-coffee-600', 'text-white', 'shadow-sm');
+            const activeNav = document.getElementById('nav-' + pageId);
+            if (activeNav) {
+                activeNav.classList.remove('text-espresso-200', 'hover:text-white', 'hover:bg-espresso-900', 'font-semibold');
+                activeNav.classList.add('bg-caramel-600', 'text-white', 'shadow-xs', 'font-bold');
             }
 
-            resizeCharts();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Redimensionar gráficos quando abrir as abas correspondentes
+            setTimeout(() => {
+                if (chartAnnualInstance) chartAnnualInstance.resize();
+                if (chartCostsPieInstance) chartCostsPieInstance.resize();
+                if (chartSchoolInstance) chartSchoolInstance.resize();
+                if (chartTournamentInstance) chartTournamentInstance.resize();
+            }, 60);
         }
 
-        // Alternar Modo Apresentação Completa
-        function togglePresentationMode() {
-            const body = document.body;
-            body.classList.toggle('presentation-mode');
-            const label = document.getElementById('txt-presentation');
-            if (body.classList.contains('presentation-mode')) {
-                label.textContent = 'Voltar para Navegação por Abas';
-                showToast('Modo Apresentação ativado: todas as seções visíveis.');
-            } else {
-                label.textContent = 'Visão Completa (Apresentação)';
-                openTab('sec-empresa');
-            }
-            setTimeout(resizeCharts, 100);
-        }
-
-        function resizeCharts() {
-            if (chartCustosInstance) chartCustosInstance.resize();
-            if (chartAnualInstance) chartAnualInstance.resize();
-            if (chartNotasInstance) chartNotasInstance.resize();
-            if (chartGolsInstance) chartGolsInstance.resize();
-        }
-
-        // Editar custo diretamente na tabela
-        function updateCostItem(idx, value) {
-            const num = parseFloat(value);
-            currentCosts[idx].monthly = isNaN(num) || num < 0 ? 0 : num;
-            recalculateAll();
-        }
-
-        // Resetar simulador e custos
-        function resetValues() {
-            currentCosts = JSON.parse(JSON.stringify(defaultCosts));
-            document.getElementById('sim-volume').value = baseMonthlyUnits;
-            document.getElementById('sim-preco-pct').value = 0;
-            recalculateAll();
-            showToast('Valores originais da SerraNobre restaurados.');
-        }
-
-        // Filtro de semestre na planilha
-        function setPeriodFilter(filter) {
-            periodFilter = filter;
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('bg-coffee-800', 'text-white');
-                btn.classList.add('text-coffee-800');
-            });
-            const active = document.getElementById('filter-' + filter);
-            if (active) {
-                active.classList.remove('text-coffee-800');
-                active.classList.add('bg-coffee-800', 'text-white');
-            }
-            recalculateAll();
-        }
-
-        // Cálculo Geral e Atualização de UI
-        function recalculateAll() {
-            // 1. Custos
-            const totalMonthlyCost = currentCosts.reduce((sum, c) => sum + c.monthly, 0);
-            const totalAnnualCost = totalMonthlyCost * 12;
-
-            const custosTbody = document.getElementById('custos-tbody');
-            custosTbody.innerHTML = '';
-
-            currentCosts.forEach((item, idx) => {
-                const annual = item.monthly * 12;
-                const weight = totalMonthlyCost > 0 ? ((item.monthly / totalMonthlyCost) * 100).toFixed(1).replace('.', ',') : '0,0';
-
-                const tr = document.createElement('tr');
-                tr.className = 'hover:bg-coffee-50/70 transition-colors';
-                tr.innerHTML = `
-                    <td class="py-3.5 px-4 font-semibold text-coffee-950 flex items-center gap-2.5">
-                        <span class="w-3 h-3 rounded-full shrink-0" style="background-color: ${item.color}"></span>
-                        <span>${item.name}</span>
-                    </td>
-                    <td class="py-3.5 px-4">
-                        <span class="text-xs px-2.5 py-1 rounded-lg bg-coffee-100 text-coffee-800 font-semibold">${item.category}</span>
-                    </td>
-                    <td class="py-3.5 px-4 text-right">
-                        <div class="inline-flex items-center justify-end gap-1">
-                            <span class="text-xs text-coffee-600">R$</span>
-                            <input type="number" value="${item.monthly}" min="0" step="50"
-                                onchange="updateCostItem(${idx}, this.value)"
-                                class="w-24 text-right bg-coffee-50 border border-coffee-200 rounded-lg px-2 py-1 font-bold text-coffee-950 focus:bg-white focus:outline-none focus:ring-2 focus:ring-coffee-600">
-                        </div>
-                    </td>
-                    <td class="py-3.5 px-4 text-right font-semibold text-coffee-800">${toBRL(annual)}</td>
-                    <td class="py-3.5 px-4 text-right font-bold text-coffee-700">${weight}%</td>
-                `;
-                custosTbody.appendChild(tr);
-            });
-
-            document.getElementById('custo-total-mensal').textContent = toBRL(totalMonthlyCost);
-            document.getElementById('custo-total-anual').textContent = toBRL(totalAnnualCost);
-
-            // 2. Parâmetros do Simulador
-            const simUnits = parseInt(document.getElementById('sim-volume').value, 10) || baseMonthlyUnits;
-            const simPricePct = parseInt(document.getElementById('sim-preco-pct').value, 10) || 0;
-
-            const volumeRatio = simUnits / baseMonthlyUnits;
-            const priceRatio = 1 + (simPricePct / 100);
-            const currentAvgPrice = baseAvgPrice * priceRatio;
-
-            document.getElementById('sim-volume-label').textContent = `${simUnits.toLocaleString('pt-BR')} un./mês`;
-            document.getElementById('sim-preco-label').textContent = `${simPricePct > 0 ? '+' : ''}${simPricePct}% (${toBRL(currentAvgPrice)})`;
-
-            const projMonthlyRev = baseProjectedMonthlyRev * volumeRatio * priceRatio;
-            const projAnnualRev = projMonthlyRev * 12;
-
-            // 3. Planilha Mês a Mês
-            const filteredCurve = monthlyCurve.filter(m => periodFilter === 'all' || m.sem === periodFilter);
-            const planilhaTbody = document.getElementById('planilha-tbody');
-            planilhaTbody.innerHTML = '';
-
-            let sumUnits = 0;
-            let sumCost = 0;
-            let sumProjRev = 0;
-            let sumRealRev = 0;
-            let sumProfit = 0;
-
-            lastCalculatedRows = [];
-
-            // Calcula todos os 12 meses para os KPIs anuais
-            let fullYearRealRev = 0;
-            let fullYearProfit = 0;
-            let fullYearCost = 0;
-
-            const chartLabels = [];
-            const chartProjSeries = [];
-            const chartRealSeries = [];
-            const chartCostSeries = [];
-            const chartProfitSeries = [];
-
-            monthlyCurve.forEach(m => {
-                const mUnits = Math.round(m.realUnits * volumeRatio);
-                const mCost = totalMonthlyCost * m.costFactor;
-                const mProj = projMonthlyRev;
-                const mReal = m.realRev * volumeRatio * priceRatio;
-                const mProfit = mReal - mCost;
-
-                fullYearRealRev += mReal;
-                fullYearCost += mCost;
-                fullYearProfit += mProfit;
-
-                chartLabels.push(m.month.substring(0, 3));
-                chartProjSeries.push(Number(mProj.toFixed(2)));
-                chartRealSeries.push(Number(mReal.toFixed(2)));
-                chartCostSeries.push(Number(mCost.toFixed(2)));
-                chartProfitSeries.push(Number(mProfit.toFixed(2)));
-
-                if (periodFilter === 'all' || m.sem === periodFilter) {
-                    sumUnits += mUnits;
-                    sumCost += mCost;
-                    sumProjRev += mProj;
-                    sumRealRev += mReal;
-                    sumProfit += mProfit;
-
-                    const perfPct = mProj > 0 ? (((mReal - mProj) / mProj) * 100).toFixed(2) : '0.00';
-                    const isUp = parseFloat(perfPct) >= 0;
-
-                    lastCalculatedRows.push({
-                        month: m.month,
-                        units: mUnits,
-                        cost: mCost,
-                        proj: mProj,
-                        real: mReal,
-                        profit: mProfit
-                    });
-
-                    const tr = document.createElement('tr');
-                    tr.className = 'hover:bg-coffee-50/70 transition-colors';
-                    tr.innerHTML = `
-                        <td class="py-3 px-4 font-bold text-coffee-950">${m.month}</td>
-                        <td class="py-3 px-4 text-right text-coffee-800">${mUnits.toLocaleString('pt-BR')} un.</td>
-                        <td class="py-3 px-4 text-right font-medium text-coffee-700">${toBRL(mCost)}</td>
-                        <td class="py-3 px-4 text-right text-coffee-600">${toBRL(mProj)}</td>
-                        <td class="py-3 px-4 text-right font-bold text-coffee-950">${toBRL(mReal)}</td>
-                        <td class="py-3 px-4 text-right">
-                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold ${isUp ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}">
-                                ${isUp ? '+' : ''}${perfPct.replace('.', ',')}%
-                            </span>
-                        </td>
-                        <td class="py-3 px-4 text-right font-extrabold ${mProfit >= 0 ? 'text-olive-700' : 'text-red-600'}">${toBRL(mProfit)}</td>
-                    `;
-                    planilhaTbody.appendChild(tr);
+        // =====================================================================
+        // LÓGICA DA LOJA VIRTUAL & CARRINHO
+        // =====================================================================
+        function setStoreCategory(cat) {
+            selectedCategory = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                if (btn.dataset.cat === cat) {
+                    btn.classList.remove('bg-espresso-50', 'text-espresso-800', 'hover:bg-espresso-100');
+                    btn.classList.add('bg-espresso-900', 'text-white');
+                } else {
+                    btn.classList.remove('bg-espresso-900', 'text-white');
+                    btn.classList.add('bg-espresso-50', 'text-espresso-800', 'hover:bg-espresso-100');
                 }
             });
+            renderStoreProducts();
+        }
 
-            // Rodapé da Planilha: Média Mensal e Total do Período/Ano
-            const countMonths = filteredCurve.length;
-            const avgUnits = Math.round(sumUnits / countMonths);
-            const avgCost = sumCost / countMonths;
-            const avgProj = sumProjRev / countMonths;
-            const avgReal = sumRealRev / countMonths;
-            const avgProfit = sumProfit / countMonths;
-            const totalPerfPct = sumProjRev > 0 ? (((sumRealRev - sumProjRev) / sumProjRev) * 100).toFixed(2) : '0.00';
+        function renderStoreProducts() {
+            const query = (document.getElementById('store-search-input').value || '').toLowerCase().trim();
+            const grid = document.getElementById('store-products-grid');
+            grid.innerHTML = '';
 
-            const periodLabel = periodFilter === 'all' ? 'TOTAL ANUAL DETALHADO (12 MESES)' : (periodFilter === 's1' ? 'TOTAL 1º SEMESTRE (6 MESES)' : 'TOTAL 2º SEMESTRE (6 MESES)');
+            const filtered = storeProducts.filter(p => {
+                const matchCat = selectedCategory === 'Todos' || p.category === selectedCategory;
+                const matchText = p.name.toLowerCase().includes(query) ||
+                                  p.notes.toLowerCase().includes(query) ||
+                                  p.weight.toLowerCase().includes(query) ||
+                                  p.category.toLowerCase().includes(query);
+                return matchCat && matchText;
+            });
 
-            document.getElementById('planilha-tfoot').innerHTML = `
-                <tr class="bg-coffee-100 text-coffee-950 border-t-2 border-coffee-300">
-                    <td class="py-3.5 px-4">📊 MÉDIA MENSAL DO PERÍODO</td>
-                    <td class="py-3.5 px-4 text-right">${avgUnits.toLocaleString('pt-BR')} un.</td>
-                    <td class="py-3.5 px-4 text-right text-coffee-800">${toBRL(avgCost)}</td>
-                    <td class="py-3.5 px-4 text-right text-coffee-700">${toBRL(avgProj)}</td>
-                    <td class="py-3.5 px-4 text-right text-coffee-950">${toBRL(avgReal)}</td>
-                    <td class="py-3.5 px-4 text-right text-emerald-800">${parseFloat(totalPerfPct) >= 0 ? '+' : ''}${totalPerfPct.replace('.', ',')}%</td>
-                    <td class="py-3.5 px-4 text-right text-olive-800">${toBRL(avgProfit)}</td>
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full bg-white rounded-2xl p-10 text-center border border-espresso-200">
+                        <span class="text-4xl block mb-2">🔍</span>
+                        <h3 class="font-bold text-espresso-950">Nenhum café encontrado</h3>
+                        <p class="text-xs text-espresso-600 mt-1">Tente buscar por outro termo ou limpe os filtros de categoria.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(prod => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-2xl border border-espresso-200/80 shadow-xs hover:shadow-md hover:border-caramel-500 transition-all flex flex-col justify-between overflow-hidden group';
+                card.innerHTML = `
+                    <div>
+                        <!-- Topo ilustrativo do produto -->
+                        <div class="bg-gradient-to-br from-espresso-100 to-espresso-50 p-6 flex items-center justify-between relative">
+                            <span class="text-5xl group-hover:scale-110 transition-transform duration-300">${prod.icon}</span>
+                            <div class="flex flex-col items-end gap-1.5">
+                                <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-espresso-900 text-caramel-400">${prod.badge}</span>
+                                <span class="px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-white/80 text-espresso-800">${prod.weight}</span>
+                            </div>
+                        </div>
+
+                        <!-- Informações -->
+                        <div class="p-5">
+                            <span class="text-[11px] font-bold uppercase tracking-wider text-caramel-600">${prod.category}</span>
+                            <h3 class="font-brand text-lg font-extrabold text-espresso-950 mt-0.5">${prod.name}</h3>
+                            <p class="text-xs text-espresso-700 mt-2 leading-relaxed">${prod.notes}</p>
+                        </div>
+                    </div>
+
+                    <!-- Preço e Botão Comprar -->
+                    <div class="px-5 pb-5 pt-3 border-t border-espresso-100 flex items-center justify-between gap-3">
+                        <div>
+                            <span class="text-[11px] text-espresso-500 block">Preço unitário</span>
+                            <span class="text-xl font-extrabold text-espresso-950">${formatBRL(prod.price)}</span>
+                        </div>
+                        <button onclick="addToCart('${prod.id}')" class="px-4 py-2.5 rounded-xl bg-espresso-900 hover:bg-caramel-600 text-white text-xs font-bold shadow-xs transition-all active:scale-95 flex items-center gap-1.5">
+                            <span>+ Adicionar</span>
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function toggleCart(open) {
+            const overlay = document.getElementById('cart-overlay');
+            const drawer = document.getElementById('cart-drawer');
+            if (open) {
+                overlay.classList.remove('hidden');
+                setTimeout(() => drawer.classList.remove('translate-x-full'), 10);
+            } else {
+                drawer.classList.add('translate-x-full');
+                setTimeout(() => overlay.classList.add('hidden'), 280);
+            }
+        }
+
+        function addToCart(productId) {
+            const existing = cart.find(item => item.productId === productId);
+            if (existing) {
+                existing.qty += 1;
+            } else {
+                cart.push({ productId, qty: 1 });
+            }
+            const prod = storeProducts.find(p => p.id === productId);
+            updateCartUI();
+            showToast(`"${prod.name}" adicionado ao carrinho!`);
+        }
+
+        function changeCartQty(productId, delta) {
+            const idx = cart.findIndex(item => item.productId === productId);
+            if (idx === -1) return;
+            cart[idx].qty += delta;
+            if (cart[idx].qty <= 0) {
+                cart.splice(idx, 1);
+            }
+            updateCartUI();
+        }
+
+        function calculateCartTotals() {
+            let subtotal = 0;
+            let totalQty = 0;
+            cart.forEach(item => {
+                const prod = storeProducts.find(p => p.id === item.productId);
+                if (prod) {
+                    subtotal += prod.price * item.qty;
+                    totalQty += item.qty;
+                }
+            });
+            const freeShippingThreshold = 150;
+            const shipping = subtotal === 0 ? 0 : (subtotal >= freeShippingThreshold ? 0 : 18.00);
+            const total = subtotal + shipping;
+            return { subtotal, shipping, total, totalQty, freeShippingThreshold };
+        }
+
+        function updateCartUI() {
+            const { subtotal, shipping, total, totalQty, freeShippingThreshold } = calculateCartTotals();
+
+            document.getElementById('header-cart-badge').textContent = totalQty;
+            document.getElementById('cart-header-count').textContent = `${totalQty} ${totalQty === 1 ? 'item selecionado' : 'itens selecionados'}`;
+
+            // Barra de progresso Frete Grátis
+            const promoText = document.getElementById('shipping-promo-text');
+            const progressBar = document.getElementById('shipping-progress-bar');
+            if (subtotal >= freeShippingThreshold) {
+                promoText.textContent = '🎉 Parabéns! Você ganhou Frete Grátis!';
+                promoText.className = 'font-bold text-emerald-700';
+                progressBar.style.width = '100%';
+            } else {
+                const missing = freeShippingThreshold - subtotal;
+                promoText.textContent = `Faltam ${formatBRL(missing)} para Frete Grátis!`;
+                promoText.className = 'font-semibold text-espresso-800';
+                progressBar.style.width = `${Math.min(100, (subtotal / freeShippingThreshold) * 100)}%`;
+            }
+
+            // Lista de itens
+            const container = document.getElementById('cart-items-container');
+            container.innerHTML = '';
+
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <span class="text-4xl block mb-2">🛒</span>
+                        <p class="font-bold text-espresso-900 text-sm">Seu carrinho está vazio</p>
+                        <p class="text-xs text-espresso-500 mt-1">Adicione cafés especiais do catálogo para simular uma compra.</p>
+                    </div>
+                `;
+            } else {
+                cart.forEach(item => {
+                    const prod = storeProducts.find(p => p.id === item.productId);
+                    if (!prod) return;
+                    const row = document.createElement('div');
+                    row.className = 'flex items-center justify-between gap-3 p-3 rounded-xl bg-espresso-50/80 border border-espresso-200/60';
+                    row.innerHTML = `
+                        <div class="flex items-center gap-3 min-w-0">
+                            <span class="text-2xl shrink-0">${prod.icon}</span>
+                            <div class="min-w-0">
+                                <h4 class="text-xs font-bold text-espresso-950 truncate">${prod.name}</h4>
+                                <p class="text-[11px] text-espresso-600">${prod.weight} • ${formatBRL(prod.price)}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1.5 shrink-0">
+                            <button onclick="changeCartQty('${prod.id}', -1)" class="w-7 h-7 rounded-lg bg-white border border-espresso-200 font-bold text-espresso-900 hover:bg-espresso-100">-</button>
+                            <span class="w-6 text-center text-xs font-extrabold text-espresso-950">${item.qty}</span>
+                            <button onclick="changeCartQty('${prod.id}', 1)" class="w-7 h-7 rounded-lg bg-white border border-espresso-200 font-bold text-espresso-900 hover:bg-espresso-100">+</button>
+                        </div>
+                    `;
+                    container.appendChild(row);
+                });
+            }
+
+            document.getElementById('cart-subtotal').textContent = formatBRL(subtotal);
+            document.getElementById('cart-shipping').textContent = shipping === 0 && subtotal > 0 ? 'GRÁTIS' : formatBRL(shipping);
+            document.getElementById('cart-total').textContent = formatBRL(total);
+            document.getElementById('btn-go-checkout').disabled = cart.length === 0;
+        }
+
+        // =====================================================================
+        // FLUXO DE CHECKOUT E CONFIRMAÇÃO DE PEDIDO
+        // =====================================================================
+        function proceedToCheckout() {
+            if (cart.length === 0) return;
+            toggleCart(false);
+
+            const { subtotal, shipping, total } = calculateCartTotals();
+            const summaryContainer = document.getElementById('checkout-summary-items');
+            summaryContainer.innerHTML = '';
+
+            cart.forEach(item => {
+                const prod = storeProducts.find(p => p.id === item.productId);
+                if (!prod) return;
+                const div = document.createElement('div');
+                div.className = 'py-2.5 flex items-center justify-between text-xs sm:text-sm';
+                div.innerHTML = `
+                    <div>
+                        <span class="font-bold text-espresso-950">${item.qty}x ${prod.name}</span>
+                        <span class="text-espresso-500 text-xs block">${prod.weight}</span>
+                    </div>
+                    <span class="font-bold text-espresso-900">${formatBRL(prod.price * item.qty)}</span>
+                `;
+                summaryContainer.appendChild(div);
+            });
+
+            document.getElementById('chk-subtotal').textContent = formatBRL(subtotal);
+            document.getElementById('chk-shipping').textContent = shipping === 0 ? 'GRÁTIS' : formatBRL(shipping);
+            document.getElementById('chk-total').textContent = formatBRL(total);
+
+            document.getElementById('store-catalog-view').classList.add('hidden');
+            document.getElementById('store-confirmation-view').classList.add('hidden');
+            document.getElementById('store-checkout-view').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function backToCatalog() {
+            document.getElementById('store-checkout-view').classList.add('hidden');
+            document.getElementById('store-confirmation-view').classList.add('hidden');
+            document.getElementById('store-catalog-view').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function submitOrder(e) {
+            e.preventDefault();
+            if (cart.length === 0) return;
+
+            const { subtotal, shipping, total } = calculateCartTotals();
+            const customerName = document.getElementById('chk-name').value;
+            const customerAddress = `${document.getElementById('chk-address').value} — ${document.getElementById('chk-city').value}`;
+            const paymentInput = document.querySelector('input[name="paymentMethod"]:checked');
+            const paymentMethod = paymentInput ? paymentInput.value : 'PIX Instantâneo';
+
+            // Gera número de pedido fictício
+            const randomNum = Math.floor(1000 + Math.random() * 9000);
+            const orderId = `#SN-2026-${randomNum}`;
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('pt-BR') + ' às ' + now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+            // Preenche comprovante
+            document.getElementById('conf-order-id').textContent = orderId;
+            document.getElementById('conf-order-date').textContent = dateStr;
+            document.getElementById('conf-customer-name').textContent = customerName;
+            document.getElementById('conf-customer-address').textContent = customerAddress;
+            document.getElementById('conf-payment-method').textContent = paymentMethod;
+
+            const tbody = document.getElementById('conf-items-tbody');
+            tbody.innerHTML = '';
+            cart.forEach(item => {
+                const prod = storeProducts.find(p => p.id === item.productId);
+                if (!prod) return;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="py-2 font-semibold text-espresso-950">${prod.name} (${prod.weight})</td>
+                    <td class="py-2 text-center">${item.qty}</td>
+                    <td class="py-2 text-right">${formatBRL(prod.price)}</td>
+                    <td class="py-2 text-right font-bold text-espresso-950">${formatBRL(prod.price * item.qty)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('conf-subtotal').textContent = formatBRL(subtotal);
+            document.getElementById('conf-shipping').textContent = shipping === 0 ? 'GRÁTIS' : formatBRL(shipping);
+            document.getElementById('conf-total').textContent = formatBRL(total);
+
+            // Integra venda ao Vivo no Painel Financeiro
+            liveOrdersCount += 1;
+            liveSalesAmount += subtotal;
+            updateFinancialSection();
+
+            // Limpa carrinho e exibe tela de confirmação
+            cart = [];
+            updateCartUI();
+
+            document.getElementById('store-checkout-view').classList.add('hidden');
+            document.getElementById('store-confirmation-view').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            showToast(`Pedido ${orderId} confirmado e somado ao Faturamento Real!`);
+        }
+
+        // =====================================================================
+        // PÁGINAS 2, 3 E 4: DADOS CORPORATIVOS, PLANILHA E GRÁFICOS
+        // =====================================================================
+        function populateCompanyAndCostsTables() {
+            // Tabela de Produtos na Página 2
+            const compTbody = document.getElementById('company-products-tbody');
+            compTbody.innerHTML = '';
+            storeProducts.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-espresso-50';
+                tr.innerHTML = `
+                    <td class="py-3 px-4 font-bold text-espresso-950 flex items-center gap-2"><span>${p.icon}</span> ${p.name}</td>
+                    <td class="py-3 px-4 text-espresso-700">${p.category}</td>
+                    <td class="py-3 px-4 text-espresso-700">${p.weight}</td>
+                    <td class="py-3 px-4 text-right font-extrabold text-espresso-900">${formatBRL(p.price)}</td>
+                `;
+                compTbody.appendChild(tr);
+            });
+
+            // Tabela de Custos na Página 3
+            const costsTbody = document.getElementById('costs-table-tbody');
+            costsTbody.innerHTML = '';
+            const totalMonthly = operationalCosts.reduce((s, c) => s + c.monthly, 0);
+
+            operationalCosts.forEach(c => {
+                const annual = c.monthly * 12;
+                const pct = ((c.monthly / totalMonthly) * 100).toFixed(1).replace('.', ',');
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-espresso-50';
+                tr.innerHTML = `
+                    <td class="py-3 px-3.5 font-semibold text-espresso-950 flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background:${c.color}"></span>
+                        ${c.name}
+                    </td>
+                    <td class="py-3 px-3.5 text-espresso-600">${c.type}</td>
+                    <td class="py-3 px-3.5 text-right font-bold text-espresso-900">${formatBRL(c.monthly)}</td>
+                    <td class="py-3 px-3.5 text-right text-espresso-700">${formatBRL(annual)}</td>
+                    <td class="py-3 px-3.5 text-right font-bold text-espresso-700">${pct}%</td>
+                `;
+                costsTbody.appendChild(tr);
+            });
+        }
+
+        function updateFinancialSection() {
+            // Atualiza badge de Vendas ao Vivo no topo
+            document.getElementById('live-sales-badge').textContent = `+${formatBRL(liveSalesAmount)} (${liveOrdersCount} ped.)`;
+
+            const baseRealAnnual = 819000;
+            const totalRealAnnual = baseRealAnnual + liveSalesAmount;
+            const avgRealMonthly = totalRealAnnual / 12;
+            const totalProjAnnual = 795600;
+            const totalCostAnnual = 414000;
+            const totalProfitAnnual = totalRealAnnual - totalCostAnnual;
+            const avgProfitMonthly = totalProfitAnnual / 12;
+
+            const pctAboveProj = (((totalRealAnnual - totalProjAnnual) / totalProjAnnual) * 100).toFixed(2).replace('.', ',');
+            const netMargin = ((totalProfitAnnual / totalRealAnnual) * 100).toFixed(1).replace('.', ',');
+
+            document.getElementById('kpi-real-annual').textContent = formatBRL(totalRealAnnual);
+            document.getElementById('kpi-real-monthly').textContent = `Média: ${formatBRL(avgRealMonthly)}/mês (+${pctAboveProj}%)`;
+            document.getElementById('kpi-profit-annual').textContent = formatBRL(totalProfitAnnual);
+            document.getElementById('kpi-profit-monthly').textContent = `Média: ${formatBRL(avgProfitMonthly)}/mês (Margem ${netMargin}%)`;
+
+            document.getElementById('panel-real-annual-total').textContent = formatBRL(totalRealAnnual);
+            document.getElementById('panel-live-sales-note').textContent =
+                `Média de 875 pedidos/mês (R$ 68.250,00/mês) + ${formatBRL(liveSalesAmount)} (${liveOrdersCount} pedido(s) simulados na loja).`;
+
+            // Atualiza Planilha Anual (Novembro recebe as vendas ao vivo da loja)
+            const tbody = document.getElementById('annual-sheet-tbody');
+            tbody.innerHTML = '';
+
+            let sumOrders = 0;
+            let sumCost = 0;
+            let sumProj = 0;
+            let sumReal = 0;
+            let sumProfit = 0;
+
+            const labels = [];
+            const dataCost = [];
+            const dataProj = [];
+            const dataReal = [];
+            const dataProfit = [];
+
+            annualBaseMonths.forEach(m => {
+                const isNov = m.month === 'Novembro';
+                const orders = m.realOrders + (isNov ? liveOrdersCount : 0);
+                const realRev = m.realRev + (isNov ? liveSalesAmount : 0);
+                const profit = realRev - m.cost;
+                const varPct = (((realRev - m.proj) / m.proj) * 100).toFixed(1);
+                const isPos = parseFloat(varPct) >= 0;
+
+                sumOrders += orders;
+                sumCost += m.cost;
+                sumProj += m.proj;
+                sumReal += realRev;
+                sumProfit += profit;
+
+                labels.push(m.month.substring(0, 3));
+                dataCost.push(m.cost);
+                dataProj.push(m.proj);
+                dataReal.push(realRev);
+                dataProfit.push(profit);
+
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-espresso-50/70 transition-colors';
+                tr.innerHTML = `
+                    <td class="py-3 px-4 font-bold text-espresso-950">${m.month} ${isNov && liveOrdersCount > 0 ? '<span class="ml-1 text-[10px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">+Loja</span>' : ''}</td>
+                    <td class="py-3 px-4 text-right text-espresso-700">${orders.toLocaleString('pt-BR')} ped.</td>
+                    <td class="py-3 px-4 text-right text-rose-700 font-medium">${formatBRL(m.cost)}</td>
+                    <td class="py-3 px-4 text-right text-espresso-600">${formatBRL(m.proj)}</td>
+                    <td class="py-3 px-4 text-right font-bold text-espresso-950">${formatBRL(realRev)}</td>
+                    <td class="py-3 px-4 text-right">
+                        <span class="px-2 py-0.5 rounded-full text-xs font-bold ${isPos ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}">
+                            ${isPos ? '+' : ''}${varPct.replace('.', ',')}%
+                        </span>
+                    </td>
+                    <td class="py-3 px-4 text-right font-extrabold text-emerald-700">${formatBRL(profit)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            const totalVarPct = (((sumReal - sumProj) / sumProj) * 100).toFixed(2).replace('.', ',');
+
+            document.getElementById('annual-sheet-tfoot').innerHTML = `
+                <tr class="bg-espresso-100 text-espresso-950 border-t-2 border-espresso-300">
+                    <td class="py-3.5 px-4">📊 MÉDIA MENSAL (12 MESES)</td>
+                    <td class="py-3.5 px-4 text-right">${Math.round(sumOrders / 12).toLocaleString('pt-BR')} ped.</td>
+                    <td class="py-3.5 px-4 text-right text-rose-800">${formatBRL(sumCost / 12)}</td>
+                    <td class="py-3.5 px-4 text-right text-espresso-700">${formatBRL(sumProj / 12)}</td>
+                    <td class="py-3.5 px-4 text-right text-espresso-950">${formatBRL(sumReal / 12)}</td>
+                    <td class="py-3.5 px-4 text-right text-emerald-800">+${totalVarPct}%</td>
+                    <td class="py-3.5 px-4 text-right text-emerald-800">${formatBRL(sumProfit / 12)}</td>
                 </tr>
-                <tr class="bg-coffee-950 text-cream">
-                    <td class="py-4 px-4 rounded-bl-xl">🏆 ${periodLabel}</td>
-                    <td class="py-4 px-4 text-right">${sumUnits.toLocaleString('pt-BR')} un.</td>
-                    <td class="py-4 px-4 text-right text-coffee-300">${toBRL(sumCost)}</td>
-                    <td class="py-4 px-4 text-right text-coffee-200">${toBRL(sumProjRev)}</td>
-                    <td class="py-4 px-4 text-right text-emerald-300">${toBRL(sumRealRev)}</td>
-                    <td class="py-4 px-4 text-right text-emerald-300">${parseFloat(totalPerfPct) >= 0 ? '+' : ''}${totalPerfPct.replace('.', ',')}%</td>
-                    <td class="py-4 px-4 text-right text-amber-300 rounded-br-xl">${toBRL(sumProfit)}</td>
+                <tr class="bg-espresso-950 text-cream">
+                    <td class="py-4 px-4 rounded-bl-xl">🏆 TOTAL ANUAL DETALHADO</td>
+                    <td class="py-4 px-4 text-right">${sumOrders.toLocaleString('pt-BR')} ped.</td>
+                    <td class="py-4 px-4 text-right text-rose-300">${formatBRL(sumCost)}</td>
+                    <td class="py-4 px-4 text-right text-espresso-300">${formatBRL(sumProj)}</td>
+                    <td class="py-4 px-4 text-right text-emerald-300">${formatBRL(sumReal)}</td>
+                    <td class="py-4 px-4 text-right text-emerald-300">+${totalVarPct}%</td>
+                    <td class="py-4 px-4 text-right text-caramel-400 rounded-br-xl">${formatBRL(sumProfit)}</td>
                 </tr>
             `;
 
-            // 4. Atualiza Cards da Seção 3
-            const annualPerfPct = projAnnualRev > 0 ? (((fullYearRealRev - projAnnualRev) / projAnnualRev) * 100).toFixed(2) : '0.00';
-            const netMarginPct = fullYearRealRev > 0 ? ((fullYearProfit / fullYearRealRev) * 100).toFixed(1) : '0.0';
-
-            document.getElementById('card-fat-proj-mensal').textContent = toBRL(projMonthlyRev);
-            document.getElementById('card-qtd-mensal').textContent = `${simUnits.toLocaleString('pt-BR')} unidades/mês • Ticket ${toBRL(currentAvgPrice)}`;
-
-            document.getElementById('card-fat-proj-anual').textContent = toBRL(projAnnualRev);
-            document.getElementById('card-qtd-anual').textContent = `${(simUnits * 12).toLocaleString('pt-BR')} unidades projetadas/ano`;
-
-            document.getElementById('card-fat-real-anual').textContent = toBRL(fullYearRealRev);
-            document.getElementById('card-fat-real-mensal').textContent = `Média Real: ${toBRL(fullYearRealRev / 12)}/mês (${parseFloat(annualPerfPct) >= 0 ? '+' : ''}${annualPerfPct.replace('.', ',')}%)`;
-
-            document.getElementById('card-lucro-anual').textContent = toBRL(fullYearProfit);
-            document.getElementById('card-lucro-mensal').textContent = `Média: ${toBRL(fullYearProfit / 12)}/mês • Margem ${netMarginPct.replace('.', ',')}%`;
-
-            // 5. Atualiza Gráficos
-            renderCostDoughnut();
-            renderAnnualChart(chartLabels, chartProjSeries, chartRealSeries, chartCostSeries, chartProfitSeries);
+            renderAnnualFinanceChart(labels, dataCost, dataProj, dataReal, dataProfit);
         }
 
-        // Exportar planilha para CSV
-        function exportCSV() {
-            let csv = 'Mes;Quantidade Vendida;Custos Mensais (R$);Faturamento Projetado (R$);Faturamento Real (R$);Lucro Liquido Real (R$)\n';
-            lastCalculatedRows.forEach(r => {
-                csv += `${r.month};${r.units};${r.cost.toFixed(2).replace('.', ',')};${r.proj.toFixed(2).replace('.', ',')};${r.real.toFixed(2).replace('.', ',')};${r.profit.toFixed(2).replace('.', ',')}\n`;
-            });
-            const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'SerraNobre_Planilha_Financeira_2026.csv';
-            a.click();
-            URL.revokeObjectURL(url);
-            showToast('Planilha CSV exportada com sucesso!');
-        }
+        // =====================================================================
+        // GRÁFICOS (CHART.JS)
+        // =====================================================================
+        function renderAnnualFinanceChart(labels, cost, proj, real, profit) {
+            const ctx = document.getElementById('chartAnnualFinance').getContext('2d');
+            if (chartAnnualInstance) chartAnnualInstance.destroy();
 
-        // Gráfico de Rosca: Custos
-        function renderCostDoughnut() {
-            const ctx = document.getElementById('chartCustosRosca').getContext('2d');
-            if (chartCustosInstance) chartCustosInstance.destroy();
-
-            chartCustosInstance = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Aluguel', 'Água e Luz', 'Matéria-prima', 'Transporte', 'Manutenção'],
-                    datasets: [{
-                        data: currentCosts.map(c => c.monthly),
-                        backgroundColor: currentCosts.map(c => c.color),
-                        borderColor: '#ffffff',
-                        borderWidth: 2,
-                        hoverOffset: 6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '62%',
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: { usePointStyle: true, boxWidth: 8, padding: 12, font: { family: 'Inter', size: 11 } }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(ctx) {
-                                    const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
-                                    const pct = total > 0 ? ((ctx.parsed / total) * 100).toFixed(1) : 0;
-                                    return ` ${toBRL(ctx.parsed)} (${pct}%)`;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Gráfico Anual: Projetado vs Real vs Custos vs Lucro
-        function renderAnnualChart(labels, proj, real, cost, profit) {
-            const ctx = document.getElementById('chartAnualComparativo').getContext('2d');
-            if (chartAnualInstance) chartAnualInstance.destroy();
-
-            chartAnualInstance = new Chart(ctx, {
+            chartAnnualInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: labels,
+                    labels,
                     datasets: [
                         {
                             label: 'Faturamento Real (R$)',
                             data: real,
                             backgroundColor: '#556b2f',
-                            borderRadius: 6,
+                            borderRadius: 5,
                             order: 2
                         },
                         {
@@ -1180,27 +1464,26 @@
                             data: proj,
                             type: 'line',
                             borderColor: '#c87544',
-                            backgroundColor: '#c87544',
-                            borderWidth: 2.5,
                             borderDash: [5, 5],
-                            pointRadius: 3,
+                            borderWidth: 2,
+                            pointRadius: 2,
                             order: 1
                         },
                         {
-                            label: 'Custos Operacionais (R$)',
+                            label: 'Custos Mensais (R$)',
                             data: cost,
-                            backgroundColor: '#d49265',
-                            borderRadius: 6,
+                            backgroundColor: '#e2b895',
+                            borderRadius: 5,
                             order: 3
                         },
                         {
                             label: 'Lucro Líquido Real (R$)',
                             data: profit,
                             type: 'line',
-                            borderColor: '#23120c',
-                            backgroundColor: '#23120c',
+                            borderColor: '#1f100a',
+                            backgroundColor: '#1f100a',
                             borderWidth: 2.5,
-                            pointRadius: 4,
+                            pointRadius: 3.5,
                             tension: 0.25,
                             order: 0
                         }
@@ -1211,57 +1494,75 @@
                     maintainAspectRatio: false,
                     interaction: { mode: 'index', intersect: false },
                     plugins: {
-                        legend: {
-                            position: 'top',
-                            labels: { usePointStyle: true, boxWidth: 8, font: { family: 'Inter', size: 11 } }
-                        },
+                        legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 8, font: { size: 11 } } },
                         tooltip: {
                             callbacks: {
-                                label: function(ctx) {
-                                    return ` ${ctx.dataset.label}: ${toBRL(ctx.parsed.y)}`;
-                                }
+                                label: c => ` ${c.dataset.label}: ${formatBRL(c.parsed.y)}`
                             }
                         }
                     },
                     scales: {
                         y: {
                             beginAtZero: true,
-                            grid: { color: '#f3ece4' },
-                            ticks: {
-                                font: { family: 'Inter', size: 11 },
-                                callback: v => 'R$ ' + (v / 1000).toFixed(0) + 'k'
-                            }
+                            grid: { color: '#f5ece3' },
+                            ticks: { font: { size: 11 }, callback: v => 'R$ ' + (v / 1000).toFixed(0) + 'k' }
                         },
-                        x: {
-                            grid: { display: false },
-                            ticks: { font: { family: 'Inter', size: 11 } }
+                        x: { grid: { display: false }, ticks: { font: { size: 11 } } }
+                    }
+                }
+            });
+        }
+
+        function renderCostsPieChart() {
+            const ctx = document.getElementById('chartCostsPie').getContext('2d');
+            if (chartCostsPieInstance) chartCostsPieInstance.destroy();
+
+            chartCostsPieInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Aluguel', 'Água e Luz', 'Matéria-prima', 'Transporte', 'Manutenção'],
+                    datasets: [{
+                        data: operationalCosts.map(c => c.monthly),
+                        backgroundColor: operationalCosts.map(c => c.color),
+                        borderColor: '#ffffff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '62%',
+                    plugins: {
+                        legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, font: { size: 11 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: c => ` ${formatBRL(c.parsed)}`
+                            }
                         }
                     }
                 }
             });
         }
 
-        // Gráficos da Seção 5: Atividade de Média Aritmética
-        function renderActivityCharts() {
+        function renderMathActivityCharts() {
             // Questão 1: Notas das Salas
-            const ctxNotas = document.getElementById('chartNotasEscola').getContext('2d');
-            const notas = [7, 8, 9, 10, 6, 5, 8, 9, 7, 4, 10];
-            chartNotasInstance = new Chart(ctxNotas, {
+            const ctx1 = document.getElementById('chartSchoolGrades').getContext('2d');
+            chartSchoolInstance = new Chart(ctx1, {
                 type: 'bar',
                 data: {
-                    labels: ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'S10', 'S11'],
+                    labels: ['Sala 1', 'Sala 2', 'Sala 3', 'Sala 4', 'Sala 5', 'Sala 6', 'Sala 7', 'Sala 8', 'Sala 9', 'Sala 10', 'Sala 11'],
                     datasets: [
                         {
-                            label: 'Nota da Sala',
-                            data: notas,
+                            label: 'Nota',
+                            data: [7, 8, 9, 10, 6, 5, 8, 9, 7, 4, 10],
                             backgroundColor: '#97482d',
-                            borderRadius: 5
+                            borderRadius: 4
                         },
                         {
                             label: 'Média (7,55)',
                             data: Array(11).fill(7.55),
                             type: 'line',
-                            borderColor: '#556b2f',
+                            borderColor: '#15803d',
                             borderWidth: 2,
                             borderDash: [4, 4],
                             pointRadius: 0
@@ -1271,35 +1572,32 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'top', labels: { boxWidth: 10, font: { size: 10 } } }
-                    },
+                    plugins: { legend: { position: 'top', labels: { boxWidth: 10, font: { size: 10 } } } },
                     scales: {
-                        y: { beginAtZero: true, max: 11, ticks: { stepSize: 2, font: { size: 10 } }, grid: { color: '#f3ece4' } },
-                        x: { ticks: { font: { size: 10 } }, grid: { display: false } }
+                        y: { beginAtZero: true, max: 11, ticks: { stepSize: 2, font: { size: 10 } } },
+                        x: { grid: { display: false }, ticks: { font: { size: 9 } } }
                     }
                 }
             });
 
             // Questão 2: Gols do Torneio
-            const ctxGols = document.getElementById('chartGolsTorneio').getContext('2d');
-            const gols = [3, 2, 2, 0, 4, 6, 3, 4];
-            chartGolsInstance = new Chart(ctxGols, {
+            const ctx2 = document.getElementById('chartTournamentGoals').getContext('2d');
+            chartTournamentInstance = new Chart(ctx2, {
                 type: 'bar',
                 data: {
                     labels: ['Jogo 1', 'Jogo 2', 'Jogo 3', 'Jogo 4', 'Jogo 5', 'Jogo 6', 'Jogo 7', 'Jogo 8'],
                     datasets: [
                         {
                             label: 'Gols Marcados',
-                            data: gols,
-                            backgroundColor: '#556b2f',
-                            borderRadius: 5
+                            data: [3, 2, 2, 0, 4, 6, 3, 4],
+                            backgroundColor: '#15803d',
+                            borderRadius: 4
                         },
                         {
                             label: 'Média (3,0 gols)',
                             data: Array(8).fill(3),
                             type: 'line',
-                            borderColor: '#23120c',
+                            borderColor: '#1f100a',
                             borderWidth: 2,
                             borderDash: [4, 4],
                             pointRadius: 0
@@ -1309,21 +1607,23 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'top', labels: { boxWidth: 10, font: { size: 10 } } }
-                    },
+                    plugins: { legend: { position: 'top', labels: { boxWidth: 10, font: { size: 10 } } } },
                     scales: {
-                        y: { beginAtZero: true, max: 7, ticks: { stepSize: 1, font: { size: 10 } }, grid: { color: '#f3ece4' } },
-                        x: { ticks: { font: { size: 10 } }, grid: { display: false } }
+                        y: { beginAtZero: true, max: 7, ticks: { stepSize: 1, font: { size: 10 } } },
+                        x: { grid: { display: false }, ticks: { font: { size: 10 } } }
                     }
                 }
             });
         }
 
-        // Inicialização
+        // Inicialização ao carregar a página
         window.addEventListener('DOMContentLoaded', () => {
-            recalculateAll();
-            renderActivityCharts();
+            renderStoreProducts();
+            updateCartUI();
+            populateCompanyAndCostsTables();
+            updateFinancialSection();
+            renderCostsPieChart();
+            renderMathActivityCharts();
         });
     </script>
 </body>
